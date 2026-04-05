@@ -1,0 +1,35 @@
+# Bazel
+bazel-*
+dist/
+
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Drizzle
+drizzle/meta/
+
+# Docker volumes
+pgdata/
