@@ -9,8 +9,11 @@
     "start": "bun dist/index.js"
   },
   "dependencies": {
-    "discord.js": "dev",
     "@ticketbot/db": "workspace:*",
-    "@ticketbot/shared": "workspace:*"
+    "@ticketbot/shared": "workspace:*",
+    "discord.js": "dev"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.11"
   }
 }
