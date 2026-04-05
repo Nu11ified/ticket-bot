@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ticketbot
+      POSTGRES_USER: ticketbot
+      POSTGRES_PASSWORD: ticketbot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ticketbot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+      target: dev
+    volumes:
+      - ./apps/bot/src:/app/apps/bot/src
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    restart: unless-stopped
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      target: dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/server/src:/app/apps/server/src
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+      target: dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/dashboard/src:/app/apps/dashboard/src
+      - ./packages:/app/packages
+    depends_on:
+      - server
+    env_file: .env
+    restart: unless-stopped
+
+  drizzle-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      target: dev
+    command: ["bunx", "drizzle-kit", "studio", "--port", "4983", "--host", "0.0.0.0"]
+    ports:
+      - "4983:4983"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+
+volumes:
+  pgdata:
