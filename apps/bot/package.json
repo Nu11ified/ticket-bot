@@ -1,0 +1,16 @@
+{
+  "name": "@ticketbot/bot",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts --target=bun --outdir=dist",
+    "start": "bun dist/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^15.0.0",
+    "@ticketbot/db": "workspace:*",
+    "@ticketbot/shared": "workspace:*"
+  }
+}
