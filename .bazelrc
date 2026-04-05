@@ -1,0 +1,21 @@
+# Enable bzlmod
+build --enable_bzlmod
+
+# TypeScript strict
+build --@aspect_rules_ts//ts:skipLibCheck=always
+
+# Convenience
+build --symlink_prefix=dist/
+
+# Test output
+test --test_output=errors
+test --test_verbose_timeout_warnings
+
+# CI config
+build:ci --remote_cache=grpcs://your-cache-endpoint
+build:ci --google_default_credentials
+build:ci --noremote_upload_local_results
+
+# Performance
+build --experimental_isolated_extension_usages
+startup --host_jvm_args=-Xmx4g
