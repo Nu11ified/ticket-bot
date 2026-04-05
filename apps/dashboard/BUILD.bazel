@@ -1,0 +1,16 @@
+load("//tools:next_build.bzl", "next_build")
+
+next_build(
+    name = "dashboard",
+    srcs = glob(["src/**/*.ts", "src/**/*.tsx", "src/**/*.css"]) + [
+        "next.config.ts",
+        "tailwind.config.ts",
+        "postcss.config.js",
+        "tsconfig.json",
+        "package.json",
+    ],
+    deps = [
+        "//:node_modules",
+        "//packages/shared",
+    ],
+)

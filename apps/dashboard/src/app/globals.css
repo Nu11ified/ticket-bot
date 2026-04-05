@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-glass-50: rgba(255, 255, 255, 0.05);
+  --color-glass-100: rgba(255, 255, 255, 0.1);
+  --color-glass-200: rgba(255, 255, 255, 0.2);
+  --color-glass-300: rgba(255, 255, 255, 0.3);
+  --color-surface: rgba(15, 15, 20, 1);
+  --color-surface-raised: rgba(25, 25, 35, 1);
+  --color-surface-overlay: rgba(30, 30, 45, 0.8);
+  --color-accent: rgba(99, 102, 241, 1);
+  --color-accent-glow: rgba(99, 102, 241, 0.3);
+}
+
+body {
+  background: var(--color-surface);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.glass-panel {
+  background: var(--color-surface-overlay);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-100);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel:hover {
+  border-color: var(--color-glass-200);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-button {
+  background: var(--color-glass-100);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-glass-200);
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+}
+
+.glass-button:hover {
+  background: var(--color-glass-200);
+  border-color: var(--color-glass-300);
+}
