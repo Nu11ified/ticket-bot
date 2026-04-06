@@ -1,6 +1,11 @@
 import type { Database } from '@ticketbot/db'
 import { categories, guildSettings } from '@ticketbot/db'
-import { type ChatInputCommandInteraction, MessageFlags, type TextChannel } from 'discord.js'
+import {
+	type ChatInputCommandInteraction,
+	type GuildMember,
+	MessageFlags,
+	type TextChannel,
+} from 'discord.js'
 import { eq } from 'drizzle-orm'
 import { writeAuditLog } from '../services/audit.js'
 import {
@@ -34,6 +39,21 @@ export async function handleClose(
 		return
 	}
 
+	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
+	const member = interaction.member
+	const isStaff =
+		member && 'roles' in member
+			? staffRoleIds.some((roleId) => (member as GuildMember).roles.cache.has(roleId))
+			: false
+
+	if (!isStaff && interaction.user.id !== ticket.creatorDiscordId) {
+		await interaction.reply({
+			content: 'You do not have staff access to this ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
+		return
+	}
+
 	await interaction.deferReply()
 
 	const reason = interaction.options.getString('reason') ?? undefined
@@ -46,9 +66,8 @@ export async function handleClose(
 	)
 
 	await closeTicket(db, ticket.ticketId, closerId, reason)
-	await buildAndStoreTranscript(db, ticket.ticketId, ticket.guildId)
+	const transcriptResult = await buildAndStoreTranscript(db, ticket.ticketId, ticket.guildId)
 
-	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
 	const channel = interaction.channel as TextChannel
 	await lockTicketChannel(channel, ticket.creatorDiscordId, staffRoleIds)
 
@@ -78,9 +97,9 @@ export async function handleClose(
 
 				const summary = transcriptSummaryEmbed({
 					ticketNumber: ticket.ticketNumber,
-					messageCount: 0,
-					participantCount: 0,
-					durationSeconds: 0,
+					messageCount: transcriptResult.messageCount,
+					participantCount: transcriptResult.participantCount,
+					durationSeconds: transcriptResult.durationSeconds,
 					categoryName: category[0]?.name ?? 'Unknown',
 				})
 				await transcriptChannel.send({ embeds: [summary] })

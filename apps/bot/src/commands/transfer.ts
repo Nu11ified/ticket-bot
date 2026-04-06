@@ -1,5 +1,5 @@
 import type { Database } from '@ticketbot/db'
-import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
+import { type ChatInputCommandInteraction, type GuildMember, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
 import {
 	ensureUser,
@@ -30,9 +30,22 @@ export async function handleTransfer(
 		return
 	}
 
-	const targetUser = interaction.options.getUser('user', true)
-
 	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
+	const member = interaction.member
+	const isStaff =
+		member && 'roles' in member
+			? staffRoleIds.some((roleId) => (member as GuildMember).roles.cache.has(roleId))
+			: false
+
+	if (!isStaff) {
+		await interaction.reply({
+			content: 'You do not have staff access to this ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
+		return
+	}
+
+	const targetUser = interaction.options.getUser('user', true)
 	const targetMember = await interaction.guild?.members.fetch(targetUser.id)
 	const isTargetStaff = targetMember
 		? staffRoleIds.some((roleId) => targetMember.roles.cache.has(roleId))

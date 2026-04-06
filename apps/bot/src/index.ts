@@ -100,7 +100,11 @@ client.on('roleDelete', async (role) => {
 })
 
 client.on('interactionCreate', async (interaction) => {
-	await handleInteractionCreate(db, interaction)
+	try {
+		await handleInteractionCreate(db, interaction)
+	} catch (err) {
+		console.error('interactionCreate error:', err)
+	}
 })
 
 client.on('messageCreate', async (message) => {

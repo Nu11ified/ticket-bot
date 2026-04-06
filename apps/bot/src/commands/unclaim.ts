@@ -1,7 +1,12 @@
 import type { Database } from '@ticketbot/db'
-import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
+import { type ChatInputCommandInteraction, type GuildMember, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
-import { ensureUser, resolveTicketByChannelId, unclaimTicket } from '../services/ticket.js'
+import {
+	ensureUser,
+	getStaffRoleDiscordIds,
+	resolveTicketByChannelId,
+	unclaimTicket,
+} from '../services/ticket.js'
 import { claimEmbed } from '../utils/embeds.js'
 
 export async function handleUnclaim(
@@ -20,6 +25,21 @@ export async function handleUnclaim(
 	if (ticket.status === 'closed') {
 		await interaction.reply({
 			content: 'Cannot unclaim a closed ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
+		return
+	}
+
+	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
+	const member = interaction.member
+	const isStaff =
+		member && 'roles' in member
+			? staffRoleIds.some((roleId) => (member as GuildMember).roles.cache.has(roleId))
+			: false
+
+	if (!isStaff) {
+		await interaction.reply({
+			content: 'You do not have staff access to this ticket.',
 			flags: MessageFlags.Ephemeral,
 		})
 		return

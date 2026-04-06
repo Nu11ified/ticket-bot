@@ -1,7 +1,11 @@
 import type { Database } from '@ticketbot/db'
-import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
+import { type ChatInputCommandInteraction, type GuildMember, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
-import { resolveTicketByChannelId, updateTicketStatus } from '../services/ticket.js'
+import {
+	getStaffRoleDiscordIds,
+	resolveTicketByChannelId,
+	updateTicketStatus,
+} from '../services/ticket.js'
 import { statusChangeEmbed } from '../utils/embeds.js'
 
 export async function handleStatus(
@@ -20,6 +24,21 @@ export async function handleStatus(
 	if (ticket.status === 'closed') {
 		await interaction.reply({
 			content: 'Cannot change status of a closed ticket. Use /reopen first.',
+			flags: MessageFlags.Ephemeral,
+		})
+		return
+	}
+
+	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
+	const member = interaction.member
+	const isStaff =
+		member && 'roles' in member
+			? staffRoleIds.some((roleId) => (member as GuildMember).roles.cache.has(roleId))
+			: false
+
+	if (!isStaff) {
+		await interaction.reply({
+			content: 'You do not have staff access to this ticket.',
 			flags: MessageFlags.Ephemeral,
 		})
 		return

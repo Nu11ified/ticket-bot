@@ -154,22 +154,16 @@ export async function createTicket(
 		formResponses?: Array<{ fieldId: number; value: string }>
 	},
 ): Promise<{ ticketId: number; ticketNumber: string }> {
-	const guild = await db
-		.select({ ticketPrefix: guilds.ticketPrefix, ticketCounter: guilds.ticketCounter })
-		.from(guilds)
+	const updated = await db
+		.update(guilds)
+		.set({ ticketCounter: sql`${guilds.ticketCounter} + 1`, updatedAt: new Date() })
 		.where(eq(guilds.id, opts.guildId))
-		.limit(1)
+		.returning({ ticketCounter: guilds.ticketCounter, ticketPrefix: guilds.ticketPrefix })
 
-	const guildRow = guild[0]
+	const guildRow = updated[0]
 	if (!guildRow) throw new Error('Guild not found')
 
-	const newCounter = guildRow.ticketCounter + 1
-	const ticketNumber = `${guildRow.ticketPrefix}-${String(newCounter).padStart(4, '0')}`
-
-	await db
-		.update(guilds)
-		.set({ ticketCounter: newCounter, updatedAt: new Date() })
-		.where(eq(guilds.id, opts.guildId))
+	const ticketNumber = `${guildRow.ticketPrefix}-${String(guildRow.ticketCounter).padStart(4, '0')}`
 
 	const inserted = await db
 		.insert(tickets)

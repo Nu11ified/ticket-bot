@@ -4,7 +4,13 @@ import { MessageFlags, type ModalSubmitInteraction, type TextChannel } from 'dis
 import { eq } from 'drizzle-orm'
 import { writeAuditLog } from '../services/audit.js'
 import { resolveGuildId } from '../services/guild.js'
-import { createTicket, ensureUser, getStaffRoleDiscordIds } from '../services/ticket.js'
+import {
+	checkMaxOpen,
+	checkRateLimit,
+	createTicket,
+	ensureUser,
+	getStaffRoleDiscordIds,
+} from '../services/ticket.js'
 import { ticketWelcomeEmbed } from '../utils/embeds.js'
 import { buildTicketChannelOptions } from '../utils/permissions.js'
 
@@ -38,6 +44,22 @@ export async function handleFormModal(
 		interaction.user.displayName,
 		interaction.user.avatarURL() ?? undefined,
 	)
+
+	const rateCheck = await checkRateLimit(db, guildId, interaction.user.id)
+	if (!rateCheck.allowed) {
+		await interaction.editReply({
+			content: `Please wait ${rateCheck.retryAfterSeconds} seconds before creating another ticket.`,
+		})
+		return
+	}
+
+	const maxCheck = await checkMaxOpen(db, userId, cat.id)
+	if (!maxCheck.allowed) {
+		await interaction.editReply({
+			content: `You already have ${maxCheck.current}/${maxCheck.max} open tickets in this category.`,
+		})
+		return
+	}
 
 	const form = await db
 		.select({ id: forms.id })

@@ -8,7 +8,7 @@ import {
 	users,
 } from '@ticketbot/db'
 import type { Client } from 'discord.js'
-import { eq, lt } from 'drizzle-orm'
+import { eq, inArray, lt } from 'drizzle-orm'
 
 interface TranscriptMessage {
 	userId: string
@@ -32,7 +32,12 @@ export async function buildAndStoreTranscript(
 	db: Database,
 	ticketId: number,
 	guildId: number,
-): Promise<number> {
+): Promise<{
+	id: number
+	messageCount: number
+	participantCount: number
+	durationSeconds: number
+}> {
 	const messages = await db
 		.select({
 			userId: ticketMessages.userId,
@@ -45,9 +50,14 @@ export async function buildAndStoreTranscript(
 		.where(eq(ticketMessages.ticketId, ticketId))
 		.orderBy(ticketMessages.createdAt)
 
-	const userRows = await db
-		.select({ id: users.id, discordId: users.discordId, username: users.username })
-		.from(users)
+	const userIds = [...new Set(messages.map((m) => m.userId))]
+	const userRows =
+		userIds.length > 0
+			? await db
+					.select({ id: users.id, discordId: users.discordId, username: users.username })
+					.from(users)
+					.where(inArray(users.id, userIds))
+			: []
 
 	const userMap = new Map(userRows.map((u) => [u.id, u]))
 
@@ -141,7 +151,12 @@ export async function buildAndStoreTranscript(
 
 	const transcript = inserted[0]
 	if (!transcript) throw new Error('Failed to insert transcript')
-	return transcript.id
+	return {
+		id: transcript.id,
+		messageCount: messages.length,
+		participantCount: participants.length,
+		durationSeconds,
+	}
 }
 
 export async function runCleanupJob(
