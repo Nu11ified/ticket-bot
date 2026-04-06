@@ -1,7 +1,7 @@
-import { MessageFlags, type ChatInputCommandInteraction } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { updateTicketPriority, resolveTicketByChannelId } from '../services/ticket.js'
+import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
+import { resolveTicketByChannelId, updateTicketPriority } from '../services/ticket.js'
 import { statusChangeEmbed } from '../utils/embeds.js'
 
 export async function handlePriority(
@@ -10,12 +10,18 @@ export async function handlePriority(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
 	if (ticket.status === 'closed') {
-		await interaction.reply({ content: 'Cannot change priority of a closed ticket.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'Cannot change priority of a closed ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 

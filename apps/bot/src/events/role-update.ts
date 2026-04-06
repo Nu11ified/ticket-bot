@@ -1,7 +1,7 @@
-import { and, eq } from 'drizzle-orm'
-import type { Role } from 'discord.js'
 import type { Database } from '@ticketbot/db'
 import { discordRoles } from '@ticketbot/db'
+import type { Role } from 'discord.js'
+import { and, eq } from 'drizzle-orm'
 import { resolveGuildId } from '../services/guild.js'
 
 export async function handleRoleUpdate(db: Database, _oldRole: Role, newRole: Role): Promise<void> {

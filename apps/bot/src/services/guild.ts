@@ -1,9 +1,13 @@
-import { and, eq, inArray } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import { discordRoles, guildMembers, guildSettings, guilds, users } from '@ticketbot/db'
 import { PLAN_DEFAULTS } from '@ticketbot/shared'
 import type { PlanTier } from '@ticketbot/shared'
-import type { Guild as DiscordGuild, Role as DiscordRole, GuildMember as DiscordMember } from 'discord.js'
+import type {
+	Guild as DiscordGuild,
+	GuildMember as DiscordMember,
+	Role as DiscordRole,
+} from 'discord.js'
+import { and, eq, inArray } from 'drizzle-orm'
 
 export async function upsertGuild(
 	db: Database,

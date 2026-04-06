@@ -1,7 +1,12 @@
-import { MessageFlags, type ChatInputCommandInteraction } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { transferTicket, ensureUser, resolveTicketByChannelId, getStaffRoleDiscordIds } from '../services/ticket.js'
+import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
+import {
+	ensureUser,
+	getStaffRoleDiscordIds,
+	resolveTicketByChannelId,
+	transferTicket,
+} from '../services/ticket.js'
 import { transferEmbed } from '../utils/embeds.js'
 
 export async function handleTransfer(
@@ -10,12 +15,18 @@ export async function handleTransfer(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
 	if (ticket.status === 'closed') {
-		await interaction.reply({ content: 'Cannot transfer a closed ticket.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'Cannot transfer a closed ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 

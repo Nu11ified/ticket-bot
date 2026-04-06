@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import { auditLogs, users } from '@ticketbot/db'
 import type { AuditAction, AuditActorType } from '@ticketbot/shared'
+import { eq } from 'drizzle-orm'
 
 interface AuditEntry {
 	guildId: number

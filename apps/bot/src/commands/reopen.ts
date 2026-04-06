@@ -1,7 +1,11 @@
-import { MessageFlags, type ChatInputCommandInteraction, type TextChannel } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { reopenTicket, getStaffRoleDiscordIds, resolveTicketByChannelId } from '../services/ticket.js'
+import { type ChatInputCommandInteraction, MessageFlags, type TextChannel } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
+import {
+	getStaffRoleDiscordIds,
+	reopenTicket,
+	resolveTicketByChannelId,
+} from '../services/ticket.js'
 import { ticketReopenedEmbed } from '../utils/embeds.js'
 import { unlockTicketChannel } from '../utils/permissions.js'
 
@@ -11,12 +15,18 @@ export async function handleReopen(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
 	if (ticket.status !== 'closed') {
-		await interaction.reply({ content: 'This ticket is not closed.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This ticket is not closed.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 

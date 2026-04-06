@@ -1,5 +1,5 @@
-import type { GuildMember } from 'discord.js'
 import type { Database } from '@ticketbot/db'
+import type { GuildMember } from 'discord.js'
 import { resolveGuildId, upsertGuildMember } from '../services/guild.js'
 
 export async function handleGuildMemberAdd(db: Database, member: GuildMember): Promise<void> {

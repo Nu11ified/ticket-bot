@@ -1,14 +1,10 @@
-import { MessageFlags, type ModalSubmitInteraction, type TextChannel } from 'discord.js'
-import { eq } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import { categories, formFields, forms } from '@ticketbot/db'
-import {
-	createTicket,
-	ensureUser,
-	getStaffRoleDiscordIds,
-} from '../services/ticket.js'
-import { resolveGuildId } from '../services/guild.js'
+import { MessageFlags, type ModalSubmitInteraction, type TextChannel } from 'discord.js'
+import { eq } from 'drizzle-orm'
 import { writeAuditLog } from '../services/audit.js'
+import { resolveGuildId } from '../services/guild.js'
+import { createTicket, ensureUser, getStaffRoleDiscordIds } from '../services/ticket.js'
 import { ticketWelcomeEmbed } from '../utils/embeds.js'
 import { buildTicketChannelOptions } from '../utils/permissions.js'
 
@@ -74,9 +70,9 @@ export async function handleFormModal(
 
 	let channel: TextChannel
 	if (channelResult.mode === 'category') {
-		channel = await channelResult.category.children.create(channelResult.options) as TextChannel
+		channel = (await channelResult.category.children.create(channelResult.options)) as TextChannel
 	} else {
-		channel = await interaction.guild.channels.create(channelResult.options) as TextChannel
+		channel = (await interaction.guild.channels.create(channelResult.options)) as TextChannel
 	}
 
 	const { ticketId, ticketNumber } = await createTicket(db, {

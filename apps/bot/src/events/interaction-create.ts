@@ -1,20 +1,20 @@
-import { MessageFlags, type Interaction } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { handlePanelButton } from '../interactions/panel-button.js'
-import { handleFormModal } from '../interactions/form-modal.js'
-import { handleClose } from '../commands/close.js'
-import { handleReopen } from '../commands/reopen.js'
-import { handleClaim } from '../commands/claim.js'
-import { handleUnclaim } from '../commands/unclaim.js'
-import { handleTransfer } from '../commands/transfer.js'
-import { handlePriority } from '../commands/priority.js'
-import { handleStatus } from '../commands/status.js'
+import { type ChatInputCommandInteraction, type Interaction, MessageFlags } from 'discord.js'
 import { handleAdd } from '../commands/add.js'
+import { handleClaim } from '../commands/claim.js'
+import { handleClose } from '../commands/close.js'
+import { handlePriority } from '../commands/priority.js'
 import { handleRemove } from '../commands/remove.js'
+import { handleReopen } from '../commands/reopen.js'
+import { handleStatus } from '../commands/status.js'
+import { handleTransfer } from '../commands/transfer.js'
+import { handleUnclaim } from '../commands/unclaim.js'
+import { handleFormModal } from '../interactions/form-modal.js'
+import { handlePanelButton } from '../interactions/panel-button.js'
 
 const commandHandlers: Record<
 	string,
-	(db: Database, interaction: any) => Promise<void>
+	(db: Database, interaction: ChatInputCommandInteraction) => Promise<void>
 > = {
 	close: handleClose,
 	reopen: handleReopen,

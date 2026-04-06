@@ -1,6 +1,6 @@
-import type { Role } from 'discord.js'
 import type { Database } from '@ticketbot/db'
 import { discordRoles } from '@ticketbot/db'
+import type { Role } from 'discord.js'
 import { resolveGuildId } from '../services/guild.js'
 
 export async function handleRoleCreate(db: Database, role: Role): Promise<void> {

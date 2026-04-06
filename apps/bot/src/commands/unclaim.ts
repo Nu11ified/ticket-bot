@@ -1,7 +1,7 @@
-import { MessageFlags, type ChatInputCommandInteraction } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { unclaimTicket, resolveTicketByChannelId, ensureUser } from '../services/ticket.js'
+import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
 import { writeAuditLog } from '../services/audit.js'
+import { ensureUser, resolveTicketByChannelId, unclaimTicket } from '../services/ticket.js'
 import { claimEmbed } from '../utils/embeds.js'
 
 export async function handleUnclaim(
@@ -10,12 +10,18 @@ export async function handleUnclaim(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
 	if (ticket.status === 'closed') {
-		await interaction.reply({ content: 'Cannot unclaim a closed ticket.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'Cannot unclaim a closed ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
@@ -28,7 +34,10 @@ export async function handleUnclaim(
 	)
 
 	if (ticket.assignedToId !== userId) {
-		await interaction.reply({ content: 'You are not assigned to this ticket.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'You are not assigned to this ticket.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 

@@ -1,6 +1,6 @@
-import type { Guild as DiscordGuild } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { upsertGuild, syncGuildRoles, syncGuildMembers } from '../services/guild.js'
+import type { Guild as DiscordGuild } from 'discord.js'
+import { syncGuildMembers, syncGuildRoles, upsertGuild } from '../services/guild.js'
 
 export async function handleGuildCreate(db: Database, guild: DiscordGuild): Promise<void> {
 	console.log(`Joined guild: ${guild.name} (${guild.id})`)

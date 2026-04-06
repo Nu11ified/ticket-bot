@@ -118,7 +118,9 @@ export async function registerCommandsForAllGuilds(client: Client<true>): Promis
 		}
 	}
 
-	console.log(`Registered ${commandCount} commands in ${registered}/${client.guilds.cache.size} guilds`)
+	console.log(
+		`Registered ${commandCount} commands in ${registered}/${client.guilds.cache.size} guilds`,
+	)
 }
 
 export async function registerCommandsForGuild(

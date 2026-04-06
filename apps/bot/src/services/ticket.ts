@@ -1,4 +1,3 @@
-import { and, eq, notInArray, sql, count } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import {
 	categories,
@@ -12,6 +11,7 @@ import {
 	tickets,
 	users,
 } from '@ticketbot/db'
+import { and, count, eq, notInArray, sql } from 'drizzle-orm'
 
 export interface TicketContext {
 	ticketId: number
@@ -62,15 +62,17 @@ export async function resolveTicketByChannelId(
 	}
 }
 
-export async function getStaffRoleDiscordIds(
-	db: Database,
-	categoryId: number,
-): Promise<string[]> {
+export async function getStaffRoleDiscordIds(db: Database, categoryId: number): Promise<string[]> {
 	const access = await db
 		.select({ discordRoleId: discordRoles.discordRoleId })
 		.from(categoryRoleAccess)
 		.innerJoin(discordRoles, eq(categoryRoleAccess.discordRoleId, discordRoles.id))
-		.where(and(eq(categoryRoleAccess.categoryId, categoryId), eq(categoryRoleAccess.accessType, 'staff')))
+		.where(
+			and(
+				eq(categoryRoleAccess.categoryId, categoryId),
+				eq(categoryRoleAccess.accessType, 'staff'),
+			),
+		)
 
 	return access.map((r) => r.discordRoleId)
 }
@@ -217,10 +219,7 @@ export async function updateTicketStatus(
 	ticketId: number,
 	status: string,
 ): Promise<void> {
-	await db
-		.update(tickets)
-		.set({ status, updatedAt: new Date() })
-		.where(eq(tickets.id, ticketId))
+	await db.update(tickets).set({ status, updatedAt: new Date() }).where(eq(tickets.id, ticketId))
 }
 
 export async function closeTicket(
@@ -255,11 +254,7 @@ export async function reopenTicket(db: Database, ticketId: number): Promise<void
 		.where(eq(tickets.id, ticketId))
 }
 
-export async function claimTicket(
-	db: Database,
-	ticketId: number,
-	userId: string,
-): Promise<void> {
+export async function claimTicket(db: Database, ticketId: number, userId: string): Promise<void> {
 	await db
 		.update(tickets)
 		.set({ assignedToId: userId, updatedAt: new Date() })
@@ -289,10 +284,7 @@ export async function updateTicketPriority(
 	ticketId: number,
 	priority: string,
 ): Promise<void> {
-	await db
-		.update(tickets)
-		.set({ priority, updatedAt: new Date() })
-		.where(eq(tickets.id, ticketId))
+	await db.update(tickets).set({ priority, updatedAt: new Date() }).where(eq(tickets.id, ticketId))
 }
 
 export async function ensureUser(
@@ -312,7 +304,12 @@ export async function ensureUser(
 	if (first) {
 		await db
 			.update(users)
-			.set({ username, displayName: displayName ?? null, avatarUrl: avatarUrl ?? null, updatedAt: new Date() })
+			.set({
+				username,
+				displayName: displayName ?? null,
+				avatarUrl: avatarUrl ?? null,
+				updatedAt: new Date(),
+			})
 			.where(eq(users.id, first.id))
 		return first.id
 	}

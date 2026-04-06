@@ -1,6 +1,6 @@
-import type { GuildMember, PartialGuildMember } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { resolveGuildId, removeGuildMember } from '../services/guild.js'
+import type { GuildMember, PartialGuildMember } from 'discord.js'
+import { removeGuildMember, resolveGuildId } from '../services/guild.js'
 
 export async function handleGuildMemberRemove(
 	db: Database,

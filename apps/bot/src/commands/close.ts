@@ -1,12 +1,17 @@
-import { MessageFlags, type ChatInputCommandInteraction, type TextChannel } from 'discord.js'
 import type { Database } from '@ticketbot/db'
-import { closeTicket, ensureUser, getStaffRoleDiscordIds, resolveTicketByChannelId } from '../services/ticket.js'
-import { buildAndStoreTranscript } from '../services/transcript.js'
+import { categories, guildSettings } from '@ticketbot/db'
+import { type ChatInputCommandInteraction, MessageFlags, type TextChannel } from 'discord.js'
+import { eq } from 'drizzle-orm'
 import { writeAuditLog } from '../services/audit.js'
+import {
+	closeTicket,
+	ensureUser,
+	getStaffRoleDiscordIds,
+	resolveTicketByChannelId,
+} from '../services/ticket.js'
+import { buildAndStoreTranscript } from '../services/transcript.js'
 import { ticketClosedEmbed, transcriptSummaryEmbed } from '../utils/embeds.js'
 import { lockTicketChannel } from '../utils/permissions.js'
-import { eq } from 'drizzle-orm'
-import { categories, guildSettings } from '@ticketbot/db'
 
 export async function handleClose(
 	db: Database,
@@ -14,12 +19,18 @@ export async function handleClose(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
 	if (ticket.status === 'closed') {
-		await interaction.reply({ content: 'This ticket is already closed.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This ticket is already closed.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 

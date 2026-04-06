@@ -1,11 +1,11 @@
 import {
-	ChannelType,
-	OverwriteType,
-	PermissionFlagsBits,
 	type CategoryChannel,
 	type CategoryCreateChannelOptions,
+	ChannelType,
 	type Guild,
 	type GuildChannelCreateOptions,
+	OverwriteType,
+	PermissionFlagsBits,
 	type TextChannel,
 } from 'discord.js'
 

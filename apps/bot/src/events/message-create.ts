@@ -1,11 +1,11 @@
-import type { Message } from 'discord.js'
 import type { Database } from '@ticketbot/db'
+import type { Message } from 'discord.js'
 import {
-	resolveTicketByChannelId,
 	ensureUser,
-	logMessage,
-	setFirstResponseAt,
 	getStaffRoleDiscordIds,
+	logMessage,
+	resolveTicketByChannelId,
+	setFirstResponseAt,
 } from '../services/ticket.js'
 
 export async function handleMessageCreate(db: Database, message: Message): Promise<void> {
@@ -26,9 +26,7 @@ export async function handleMessageCreate(db: Database, message: Message): Promi
 
 	const staffRoleIds = await getStaffRoleDiscordIds(db, ticket.categoryId)
 	const member = message.member
-	const isStaff = member
-		? staffRoleIds.some((roleId) => member.roles.cache.has(roleId))
-		: false
+	const isStaff = member ? staffRoleIds.some((roleId) => member.roles.cache.has(roleId)) : false
 
 	const attachments = [...message.attachments.values()].map((a) => ({
 		id: a.id,

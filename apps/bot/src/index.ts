@@ -1,16 +1,16 @@
-import { Client, GatewayIntentBits } from 'discord.js'
 import { createDb } from '@ticketbot/db'
-import { handleReady } from './events/ready.js'
+import { Client, GatewayIntentBits } from 'discord.js'
+import { registerCommandsForAllGuilds, registerCommandsForGuild } from './commands/registry.js'
 import { handleGuildCreate } from './events/guild-create.js'
 import { handleGuildDelete } from './events/guild-delete.js'
 import { handleGuildMemberAdd } from './events/guild-member-add.js'
 import { handleGuildMemberRemove } from './events/guild-member-remove.js'
-import { handleRoleCreate } from './events/role-create.js'
-import { handleRoleUpdate } from './events/role-update.js'
-import { handleRoleDelete } from './events/role-delete.js'
 import { handleInteractionCreate } from './events/interaction-create.js'
 import { handleMessageCreate } from './events/message-create.js'
-import { registerCommandsForAllGuilds, registerCommandsForGuild } from './commands/registry.js'
+import { handleReady } from './events/ready.js'
+import { handleRoleCreate } from './events/role-create.js'
+import { handleRoleDelete } from './events/role-delete.js'
+import { handleRoleUpdate } from './events/role-update.js'
 import { runCleanupJob } from './services/transcript.js'
 
 const db = createDb(process.env.DATABASE_URL ?? '')
@@ -29,16 +29,21 @@ client.once('ready', async (c) => {
 	handleReady(c)
 	await registerCommandsForAllGuilds(c)
 
-	setInterval(async () => {
-		try {
-			const result = await runCleanupJob(db, client)
-			if (result.purged > 0) {
-				console.log(`Cleanup: purged ${result.purged} transcripts, deleted ${result.channelsDeleted} channels`)
+	setInterval(
+		async () => {
+			try {
+				const result = await runCleanupJob(db, client)
+				if (result.purged > 0) {
+					console.log(
+						`Cleanup: purged ${result.purged} transcripts, deleted ${result.channelsDeleted} channels`,
+					)
+				}
+			} catch (err) {
+				console.error('Cleanup job error:', err)
 			}
-		} catch (err) {
-			console.error('Cleanup job error:', err)
-		}
-	}, 60 * 60 * 1000)
+		},
+		60 * 60 * 1000,
+	)
 })
 
 client.on('guildCreate', async (guild) => {

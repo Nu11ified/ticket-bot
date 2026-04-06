@@ -1,16 +1,18 @@
+import type { Database } from '@ticketbot/db'
+import { categories, formFields, forms, panelButtons } from '@ticketbot/db'
 import {
-	ComponentType,
-	MessageFlags,
-	TextInputStyle,
 	type APIActionRowComponent,
 	type APIModalInteractionResponseCallbackData,
 	type APITextInputComponent,
 	type ButtonInteraction,
+	ComponentType,
+	MessageFlags,
 	type TextChannel,
+	TextInputStyle,
 } from 'discord.js'
 import { eq } from 'drizzle-orm'
-import type { Database } from '@ticketbot/db'
-import { categories, formFields, forms, panelButtons } from '@ticketbot/db'
+import { writeAuditLog } from '../services/audit.js'
+import { resolveGuildId } from '../services/guild.js'
 import {
 	checkMaxOpen,
 	checkRateLimit,
@@ -18,8 +20,6 @@ import {
 	ensureUser,
 	getStaffRoleDiscordIds,
 } from '../services/ticket.js'
-import { resolveGuildId } from '../services/guild.js'
-import { writeAuditLog } from '../services/audit.js'
 import { ticketWelcomeEmbed } from '../utils/embeds.js'
 import { buildTicketChannelOptions } from '../utils/permissions.js'
 
@@ -38,7 +38,10 @@ export async function handlePanelButton(
 
 	const btn = button[0]
 	if (!btn) {
-		await interaction.reply({ content: 'This button is no longer active.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This button is no longer active.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
@@ -55,7 +58,10 @@ export async function handlePanelButton(
 
 	const cat = category[0]
 	if (!cat || !cat.isEnabled) {
-		await interaction.reply({ content: 'This category is currently disabled.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This category is currently disabled.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
@@ -154,9 +160,9 @@ export async function handlePanelButton(
 
 	let channel: TextChannel
 	if (channelResult.mode === 'category') {
-		channel = await channelResult.category.children.create(channelResult.options) as TextChannel
+		channel = (await channelResult.category.children.create(channelResult.options)) as TextChannel
 	} else {
-		channel = await interaction.guild.channels.create(channelResult.options) as TextChannel
+		channel = (await interaction.guild.channels.create(channelResult.options)) as TextChannel
 	}
 
 	const { ticketId, ticketNumber } = await createTicket(db, {

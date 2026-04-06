@@ -1,5 +1,5 @@
-import type { APIEmbed, APIEmbedField } from 'discord.js'
 import type { TicketPriority } from '@ticketbot/shared'
+import type { APIEmbed, APIEmbedField } from 'discord.js'
 
 const STATUS_COLORS: Record<string, number> = {
 	open: 0x22c55e,

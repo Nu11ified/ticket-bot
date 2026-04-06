@@ -1,4 +1,3 @@
-import { eq, lt } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import {
 	categories,
@@ -9,6 +8,7 @@ import {
 	users,
 } from '@ticketbot/db'
 import type { Client } from 'discord.js'
+import { eq, lt } from 'drizzle-orm'
 
 interface TranscriptMessage {
 	userId: string
@@ -144,7 +144,10 @@ export async function buildAndStoreTranscript(
 	return transcript.id
 }
 
-export async function runCleanupJob(db: Database, client: Client): Promise<{ purged: number; channelsDeleted: number }> {
+export async function runCleanupJob(
+	db: Database,
+	client: Client,
+): Promise<{ purged: number; channelsDeleted: number }> {
 	const expired = await db
 		.select({
 			id: transcripts.id,

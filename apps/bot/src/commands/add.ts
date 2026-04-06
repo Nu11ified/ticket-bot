@@ -1,5 +1,5 @@
-import { MessageFlags, type ChatInputCommandInteraction, type TextChannel } from 'discord.js'
 import type { Database } from '@ticketbot/db'
+import { type ChatInputCommandInteraction, MessageFlags, type TextChannel } from 'discord.js'
 import { resolveTicketByChannelId } from '../services/ticket.js'
 import { userAddRemoveEmbed } from '../utils/embeds.js'
 
@@ -9,7 +9,10 @@ export async function handleAdd(
 ): Promise<void> {
 	const ticket = await resolveTicketByChannelId(db, interaction.channelId)
 	if (!ticket) {
-		await interaction.reply({ content: 'This is not a ticket channel.', flags: MessageFlags.Ephemeral })
+		await interaction.reply({
+			content: 'This is not a ticket channel.',
+			flags: MessageFlags.Ephemeral,
+		})
 		return
 	}
 
