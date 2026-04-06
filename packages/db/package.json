@@ -13,7 +13,8 @@
   "scripts": {
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
-    "studio": "drizzle-kit studio"
+    "studio": "drizzle-kit studio",
+    "seed": "bun src/seed.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.39.0",
