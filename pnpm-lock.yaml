@@ -14,6 +14,9 @@ importers:
 
   apps/bot:
     dependencies:
+      '@ticketbot/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
       '@ticketbot/db':
         specifier: workspace:*
         version: link:../../packages/db

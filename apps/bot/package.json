@@ -9,6 +9,7 @@
 		"start": "bun dist/index.js"
 	},
 	"dependencies": {
+		"@ticketbot/auth": "workspace:*",
 		"@ticketbot/db": "workspace:*",
 		"@ticketbot/shared": "workspace:*",
 		"discord.js": "dev"
