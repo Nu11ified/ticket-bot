@@ -1,12 +1,12 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import * as guildsSchema from './schema/guilds.js'
-import * as usersSchema from './schema/users.js'
-import * as categoriesSchema from './schema/categories.js'
-import * as panelsSchema from './schema/panels.js'
-import * as ticketsSchema from './schema/tickets.js'
 import * as auditSchema from './schema/audit.js'
+import * as categoriesSchema from './schema/categories.js'
+import * as guildsSchema from './schema/guilds.js'
+import * as panelsSchema from './schema/panels.js'
 import * as rateLimitsSchema from './schema/rate-limits.js'
+import * as ticketsSchema from './schema/tickets.js'
+import * as usersSchema from './schema/users.js'
 
 const schema = {
 	...guildsSchema,

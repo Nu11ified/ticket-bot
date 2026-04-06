@@ -1,10 +1,19 @@
 import { relations } from 'drizzle-orm'
-import { index, integer, jsonb, pgTable, serial, text, timestamp, unique } from 'drizzle-orm/pg-core'
+import {
+	index,
+	integer,
+	jsonb,
+	pgTable,
+	serial,
+	text,
+	timestamp,
+	unique,
+} from 'drizzle-orm/pg-core'
 import { boolean } from 'drizzle-orm/pg-core'
-import { guilds } from './guilds.js'
 import { categories } from './categories.js'
-import { users } from './users.js'
+import { guilds } from './guilds.js'
 import { formFields } from './panels.js'
+import { users } from './users.js'
 
 export const tickets = pgTable(
 	'tickets',
@@ -106,9 +115,21 @@ export const transcripts = pgTable(
 export const ticketsRelations = relations(tickets, ({ one, many }) => ({
 	guild: one(guilds, { fields: [tickets.guildId], references: [guilds.id] }),
 	category: one(categories, { fields: [tickets.categoryId], references: [categories.id] }),
-	creator: one(users, { fields: [tickets.creatorId], references: [users.id], relationName: 'ticketCreator' }),
-	assignedTo: one(users, { fields: [tickets.assignedToId], references: [users.id], relationName: 'ticketAssignee' }),
-	closedBy: one(users, { fields: [tickets.closedById], references: [users.id], relationName: 'ticketCloser' }),
+	creator: one(users, {
+		fields: [tickets.creatorId],
+		references: [users.id],
+		relationName: 'ticketCreator',
+	}),
+	assignedTo: one(users, {
+		fields: [tickets.assignedToId],
+		references: [users.id],
+		relationName: 'ticketAssignee',
+	}),
+	closedBy: one(users, {
+		fields: [tickets.closedById],
+		references: [users.id],
+		relationName: 'ticketCloser',
+	}),
 	formResponses: many(ticketFormResponses),
 	messages: many(ticketMessages),
 	transcript: one(transcripts, { fields: [tickets.id], references: [transcripts.ticketId] }),

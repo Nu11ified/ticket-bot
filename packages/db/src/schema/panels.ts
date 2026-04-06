@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { boolean, integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
-import { guilds } from './guilds.js'
 import { categories } from './categories.js'
+import { guilds } from './guilds.js'
 
 export const panels = pgTable('panels', {
 	id: serial('id').primaryKey(),
