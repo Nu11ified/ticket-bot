@@ -1,6 +1,6 @@
-import { and, eq, inArray } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
 import { accounts, discordRoles, guildMembers, guilds } from '@ticketbot/db'
+import { and, eq, inArray } from 'drizzle-orm'
 
 interface DiscordPartialGuild {
 	id: string

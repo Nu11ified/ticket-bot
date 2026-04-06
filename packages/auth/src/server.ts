@@ -1,7 +1,7 @@
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import type { Database } from '@ticketbot/db'
 import { accounts, sessions, users, verifications } from '@ticketbot/db'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 
 export function createAuth(db: Database) {
 	return betterAuth({

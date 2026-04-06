@@ -1,11 +1,6 @@
-import { and, eq, inArray } from 'drizzle-orm'
 import type { Database } from '@ticketbot/db'
-import {
-	guildMemberRoles,
-	guildMembers,
-	permissions,
-	rolePermissions,
-} from '@ticketbot/db'
+import { guildMemberRoles, guildMembers, permissions, rolePermissions } from '@ticketbot/db'
+import { and, eq, inArray } from 'drizzle-orm'
 
 export async function resolveUserPermissions(
 	db: Database,
