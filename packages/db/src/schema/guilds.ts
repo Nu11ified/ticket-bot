@@ -1,13 +1,11 @@
 import { relations } from 'drizzle-orm'
 import {
 	boolean,
-	index,
 	integer,
 	pgTable,
 	serial,
 	text,
 	timestamp,
-	unique,
 } from 'drizzle-orm/pg-core'
 
 export const guilds = pgTable('guilds', {
