@@ -12,7 +12,7 @@ export const auditLogs = pgTable(
 			.notNull()
 			.references(() => guilds.id, { onDelete: 'cascade' }),
 		ticketId: integer('ticket_id').references(() => tickets.id, { onDelete: 'set null' }),
-		actorId: integer('actor_id').references(() => users.id, { onDelete: 'set null' }),
+		actorId: text('actor_id').references(() => users.id, { onDelete: 'set null' }),
 		actorDiscordId: text('actor_discord_id'),
 		actorType: text('actor_type').default('user').notNull(),
 		action: text('action').notNull(),

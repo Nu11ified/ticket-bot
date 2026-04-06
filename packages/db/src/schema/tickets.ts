@@ -30,11 +30,11 @@ export const tickets = pgTable(
 		status: text('status').default('open').notNull(),
 		priority: text('priority').default('normal').notNull(),
 		channelId: text('channel_id'),
-		creatorId: integer('creator_id')
+		creatorId: text('creator_id')
 			.notNull()
 			.references(() => users.id),
-		assignedToId: integer('assigned_to_id').references(() => users.id),
-		closedById: integer('closed_by_id').references(() => users.id),
+		assignedToId: text('assigned_to_id').references(() => users.id),
+		closedById: text('closed_by_id').references(() => users.id),
 		closeReason: text('close_reason'),
 		reopenedCount: integer('reopened_count').default(0).notNull(),
 		firstResponseAt: timestamp('first_response_at', { withTimezone: true }),
@@ -71,7 +71,7 @@ export const ticketMessages = pgTable(
 		ticketId: integer('ticket_id')
 			.notNull()
 			.references(() => tickets.id, { onDelete: 'cascade' }),
-		userId: integer('user_id')
+		userId: text('user_id')
 			.notNull()
 			.references(() => users.id),
 		discordMessageId: text('discord_message_id').unique(),

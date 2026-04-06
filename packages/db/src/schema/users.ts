@@ -1,15 +1,17 @@
 import { relations } from 'drizzle-orm'
-import { integer, pgTable, serial, text, timestamp, unique } from 'drizzle-orm/pg-core'
-import { boolean } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgTable, serial, text, timestamp, unique } from 'drizzle-orm/pg-core'
 import { guilds } from './guilds.js'
 
 export const users = pgTable('users', {
-	id: serial('id').primaryKey(),
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
 	discordId: text('discord_id').notNull().unique(),
 	username: text('username').notNull(),
 	displayName: text('display_name'),
 	avatarUrl: text('avatar_url'),
 	email: text('email'),
+	emailVerified: boolean('email_verified').default(false).notNull(),
 	isSuperAdmin: boolean('is_super_admin').default(false).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -22,7 +24,7 @@ export const guildMembers = pgTable(
 		guildId: integer('guild_id')
 			.notNull()
 			.references(() => guilds.id, { onDelete: 'cascade' }),
-		userId: integer('user_id')
+		userId: text('user_id')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
