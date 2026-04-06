@@ -63,7 +63,7 @@ CREATE TABLE "guild_member_roles" (
 CREATE TABLE "guild_members" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"guild_id" integer NOT NULL,
-	"user_id" integer NOT NULL,
+	"user_id" text NOT NULL,
 	"joined_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "uq_guild_members_guild_user" UNIQUE("guild_id","user_id")
@@ -87,12 +87,13 @@ CREATE TABLE "role_permissions" (
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"discord_id" text NOT NULL,
 	"username" text NOT NULL,
 	"display_name" text,
 	"avatar_url" text,
 	"email" text,
+	"email_verified" boolean DEFAULT false NOT NULL,
 	"is_super_admin" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -197,7 +198,7 @@ CREATE TABLE "ticket_form_responses" (
 CREATE TABLE "ticket_messages" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"ticket_id" integer NOT NULL,
-	"user_id" integer NOT NULL,
+	"user_id" text NOT NULL,
 	"discord_message_id" text,
 	"content" text NOT NULL,
 	"is_staff" boolean DEFAULT false NOT NULL,
@@ -217,9 +218,9 @@ CREATE TABLE "tickets" (
 	"status" text DEFAULT 'open' NOT NULL,
 	"priority" text DEFAULT 'normal' NOT NULL,
 	"channel_id" text,
-	"creator_id" integer NOT NULL,
-	"assigned_to_id" integer,
-	"closed_by_id" integer,
+	"creator_id" text NOT NULL,
+	"assigned_to_id" text,
+	"closed_by_id" text,
 	"close_reason" text,
 	"reopened_count" integer DEFAULT 0 NOT NULL,
 	"first_response_at" timestamp with time zone,
@@ -247,7 +248,7 @@ CREATE TABLE "audit_logs" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"guild_id" integer NOT NULL,
 	"ticket_id" integer,
-	"actor_id" integer,
+	"actor_id" text,
 	"actor_discord_id" text,
 	"actor_type" text DEFAULT 'user' NOT NULL,
 	"action" text NOT NULL,
@@ -262,6 +263,43 @@ CREATE TABLE "rate_limits" (
 	"action" text NOT NULL,
 	"last_action_at" timestamp with time zone NOT NULL,
 	CONSTRAINT "uq_rate_limits_guild_user_action" UNIQUE("guild_id","user_discord_id","action")
+);
+--> statement-breakpoint
+CREATE TABLE "accounts" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"account_id" text NOT NULL,
+	"provider_id" text NOT NULL,
+	"access_token" text,
+	"refresh_token" text,
+	"access_token_expires_at" timestamp with time zone,
+	"refresh_token_expires_at" timestamp with time zone,
+	"scope" text,
+	"id_token" text,
+	"password" text,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "sessions" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" text NOT NULL,
+	"token" text NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"ip_address" text,
+	"user_agent" text,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "sessions_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
+CREATE TABLE "verifications" (
+	"id" text PRIMARY KEY NOT NULL,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now(),
+	"updated_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 ALTER TABLE "free_premium_grants" ADD CONSTRAINT "free_premium_grants_guild_id_guilds_id_fk" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -297,6 +335,8 @@ ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_guild_id_guilds_id_fk" FOREI
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_ticket_id_tickets_id_fk" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_actor_id_users_id_fk" FOREIGN KEY ("actor_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "rate_limits" ADD CONSTRAINT "rate_limits_guild_id_guilds_id_fk" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_ticket_messages_ticket_time" ON "ticket_messages" USING btree ("ticket_id","created_at");--> statement-breakpoint
 CREATE INDEX "idx_ticket_messages_discord_id" ON "ticket_messages" USING btree ("discord_message_id");--> statement-breakpoint
 CREATE INDEX "idx_tickets_guild_status" ON "tickets" USING btree ("guild_id","status");--> statement-breakpoint
