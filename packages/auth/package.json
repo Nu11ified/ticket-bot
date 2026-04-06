@@ -11,9 +11,8 @@
 		"./client": "./src/client.ts"
 	},
 	"dependencies": {
-		"better-auth": "^1.2.0"
-	},
-	"devDependencies": {
-		"@ticketbot/db": "workspace:*"
+		"@ticketbot/db": "workspace:*",
+		"better-auth": "^1.2.0",
+		"drizzle-orm": "^0.39.0"
 	}
 }
