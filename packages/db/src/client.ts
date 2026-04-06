@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as auditSchema from './schema/audit.js'
+import * as authSchema from './schema/auth.js'
 import * as categoriesSchema from './schema/categories.js'
 import * as guildsSchema from './schema/guilds.js'
 import * as panelsSchema from './schema/panels.js'
@@ -16,6 +17,7 @@ const schema = {
 	...ticketsSchema,
 	...auditSchema,
 	...rateLimitsSchema,
+	...authSchema,
 }
 
 export function createDb(connectionString: string) {
