@@ -1,5 +1,5 @@
 {
-  "id": "3917cb82-2f3a-4dbd-836c-2018bcee2184",
+  "id": "96cc19e6-3fcc-4b78-9219-97baf2f32397",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -144,6 +144,20 @@
           "primaryKey": false,
           "notNull": false,
           "default": 48
+        },
+        "transcript_retention_days": {
+          "name": "transcript_retention_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 5
+        },
+        "ticket_cooldown_seconds": {
+          "name": "ticket_cooldown_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 60
         },
         "created_at": {
           "name": "created_at",

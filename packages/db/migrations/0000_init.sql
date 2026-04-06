@@ -19,6 +19,8 @@ CREATE TABLE "guild_settings" (
 	"locale" text DEFAULT 'en' NOT NULL,
 	"timezone" text DEFAULT 'UTC' NOT NULL,
 	"auto_close_hours" integer DEFAULT 48,
+	"transcript_retention_days" integer DEFAULT 5 NOT NULL,
+	"ticket_cooldown_seconds" integer DEFAULT 60 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "guild_settings_guild_id_unique" UNIQUE("guild_id")

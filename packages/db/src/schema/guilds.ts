@@ -28,6 +28,8 @@ export const guildSettings = pgTable('guild_settings', {
 	locale: text('locale').default('en').notNull(),
 	timezone: text('timezone').default('UTC').notNull(),
 	autoCloseHours: integer('auto_close_hours').default(48),
+	transcriptRetentionDays: integer('transcript_retention_days').default(5).notNull(),
+	ticketCooldownSeconds: integer('ticket_cooldown_seconds').default(60).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
