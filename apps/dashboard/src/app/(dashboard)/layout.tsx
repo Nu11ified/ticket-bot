@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 	return (
 		<UserProvider user={user}>
 			<TopBar />
-			<main className="p-6">{children}</main>
+			<main>{children}</main>
 		</UserProvider>
 	)
 }

@@ -15,7 +15,7 @@ export default function GuildsPage() {
 	const refreshGuilds = useRefreshGuilds()
 
 	return (
-		<div className="max-w-4xl mx-auto">
+		<div className="max-w-4xl mx-auto p-6">
 			<PageHeader
 				title="Your Servers"
 				description="Select a server to manage"
