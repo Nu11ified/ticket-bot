@@ -10,6 +10,7 @@ import { authPlugin } from './middleware/auth.js'
 import { superAdminGuard } from './middleware/super-admin.js'
 import { apiKeyRoutes } from './routes/api/api-keys.js'
 import { auditLogRoutes } from './routes/api/audit-logs.js'
+import { billingRoutes } from './routes/api/billing.js'
 import { categoryRoutes } from './routes/api/categories.js'
 import { guildRoutes } from './routes/api/guilds.js'
 import { panelRoutes } from './routes/api/panels.js'
@@ -76,7 +77,8 @@ const app = new Elysia()
 			.use(transcriptRoutes(db))
 			.use(roleRoutes(db))
 			.use(auditLogRoutes(db))
-			.use(apiKeyRoutes(db)),
+			.use(apiKeyRoutes(db))
+			.use(billingRoutes(db)),
 	)
 	// Internal routes — super admin only
 	.group('/internal', (app) =>

@@ -3,6 +3,7 @@ import postgres from 'postgres'
 import * as apiKeysSchema from './schema/api-keys.js'
 import * as auditSchema from './schema/audit.js'
 import * as authSchema from './schema/auth.js'
+import * as billingSchema from './schema/billing.js'
 import * as categoriesSchema from './schema/categories.js'
 import * as guildsSchema from './schema/guilds.js'
 import * as panelsSchema from './schema/panels.js'
@@ -20,6 +21,7 @@ const schema = {
 	...rateLimitsSchema,
 	...authSchema,
 	...apiKeysSchema,
+	...billingSchema,
 }
 
 export function createDb(connectionString: string) {

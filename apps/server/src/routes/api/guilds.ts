@@ -1,4 +1,4 @@
-import { syncUserGuilds } from '@ticketbot/auth'
+import { resolveUserPermissions, syncUserGuilds } from '@ticketbot/auth'
 import type { Database } from '@ticketbot/db'
 import { auditLogs } from '@ticketbot/db'
 import { Elysia, t } from 'elysia'
@@ -24,6 +24,19 @@ export function guildRoutes(db: Database) {
 				const guildId = Number(params.guildId)
 				const guild = await getGuildDetails(db, guildId, user.id)
 				return { data: guild }
+			},
+			{
+				auth: true,
+				params: t.Object({ guildId: t.Numeric() }),
+			},
+		)
+		.get(
+			'/:guildId/permissions',
+			// biome-ignore lint/suspicious/noExplicitAny: user injected by auth macro
+			async ({ user, params }: any) => {
+				const guildId = Number(params.guildId)
+				const perms = await resolveUserPermissions(db, user.id, guildId)
+				return { data: { permissions: Array.from(perms) } }
 			},
 			{
 				auth: true,

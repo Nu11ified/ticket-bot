@@ -13,6 +13,9 @@ export const users = pgTable('users', {
 	email: text('email'),
 	emailVerified: boolean('email_verified').default(false).notNull(),
 	isSuperAdmin: boolean('is_super_admin').default(false).notNull(),
+	polarCustomerId: text('polar_customer_id'),
+	subscriptionStatus: text('subscription_status').default('none').notNull(),
+	premiumGuildQuota: integer('premium_guild_quota').default(0).notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
