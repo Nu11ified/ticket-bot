@@ -1,13 +1,27 @@
 import { cors } from '@elysiajs/cors'
 import { swagger } from '@elysiajs/swagger'
-import { createAuth, syncGuildRoles, syncUserGuilds } from '@ticketbot/auth'
+import { createAuth } from '@ticketbot/auth'
 import { createDb } from '@ticketbot/db'
-import { guilds } from '@ticketbot/db'
-import { eq } from 'drizzle-orm'
 import { Elysia } from 'elysia'
+import { ApiError } from './lib/api-error.js'
+import { startRateLimitCleanup } from './lib/rate-limiter.js'
+import { apiKeyPlugin } from './middleware/api-key.js'
 import { authPlugin } from './middleware/auth.js'
-import { checkPermissions } from './middleware/guard.js'
 import { superAdminGuard } from './middleware/super-admin.js'
+import { apiKeyRoutes } from './routes/api/api-keys.js'
+import { auditLogRoutes } from './routes/api/audit-logs.js'
+import { categoryRoutes } from './routes/api/categories.js'
+import { guildRoutes } from './routes/api/guilds.js'
+import { panelRoutes } from './routes/api/panels.js'
+import { roleRoutes } from './routes/api/roles.js'
+import { ticketRoutes } from './routes/api/tickets.js'
+import { transcriptRoutes } from './routes/api/transcripts.js'
+import { userRoutes } from './routes/api/user.js'
+import { publicAuditLogRoutes } from './routes/v1/audit-logs.js'
+import { publicCategoryRoutes } from './routes/v1/categories.js'
+import { publicGuildRoutes } from './routes/v1/guild.js'
+import { publicTicketRoutes } from './routes/v1/tickets.js'
+import { publicTranscriptRoutes } from './routes/v1/transcripts.js'
 
 const db = createDb(process.env.DATABASE_URL ?? '')
 const auth = createAuth(db)
@@ -32,35 +46,31 @@ const app = new Elysia()
 			allowedHeaders: ['Content-Type', 'Authorization'],
 		}),
 	)
+	.onError(({ error, set }) => {
+		if (error instanceof ApiError) {
+			set.status = error.status
+			return { error: error.code, message: error.message }
+		}
+		console.error(error)
+		set.status = 500
+		return { error: 'INTERNAL_ERROR', message: 'Something went wrong' }
+	})
 	.get('/health', () => ({ status: 'ok', timestamp: new Date().toISOString() }))
+	// Dashboard API — session authenticated
 	.use(authPlugin(auth))
-	.post(
-		'/api/guilds/refresh',
-		async ({ user }) => {
-			await syncUserGuilds(db, user.id)
-			return { success: true }
-		},
-		{ auth: true },
+	.group('/api', (app) =>
+		app
+			.use(guildRoutes(db))
+			.use(userRoutes(db))
+			.use(categoryRoutes(db))
+			.use(panelRoutes(db))
+			.use(ticketRoutes(db))
+			.use(transcriptRoutes(db))
+			.use(roleRoutes(db))
+			.use(auditLogRoutes(db))
+			.use(apiKeyRoutes(db)),
 	)
-	.post(
-		'/api/guilds/:guildId/roles/refresh',
-		async ({ params }) => {
-			const guildId = Number(params.guildId)
-			const guild = await db
-				.select({ discordId: guilds.discordId })
-				.from(guilds)
-				.where(eq(guilds.id, guildId))
-				.limit(1)
-			const firstGuild = guild[0]
-			if (!firstGuild) return { error: 'Guild not found' }
-			await syncGuildRoles(db, guildId, firstGuild.discordId)
-			return { success: true }
-		},
-		{
-			auth: true,
-			beforeHandle: checkPermissions(db, ['admin.manage_roles']),
-		},
-	)
+	// Internal routes — super admin only
 	.group('/internal', (app) =>
 		app
 			.use(superAdminGuard)
@@ -70,8 +80,27 @@ const app = new Elysia()
 				admin: user.email,
 			})),
 	)
+	// Public API — API key authenticated
+	.group('/v1', (app) =>
+		app
+			.use(apiKeyPlugin(db))
+			.use(publicGuildRoutes(db))
+			.use(publicCategoryRoutes(db))
+			.use(publicTicketRoutes(db))
+			.use(publicTranscriptRoutes(db))
+			.use(publicAuditLogRoutes(db)),
+	)
 	.listen(3001)
 
+// Start rate limit cleanup interval
+const cleanupInterval = startRateLimitCleanup()
+
 console.log(`Server running at http://localhost:${app.server?.port}`)
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+	clearInterval(cleanupInterval)
+	process.exit(0)
+})
 
 export type App = typeof app
