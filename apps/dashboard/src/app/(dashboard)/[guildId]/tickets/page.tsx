@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Ticket } from 'lucide-react'
+import { Ticket as TicketIcon } from 'lucide-react'
 import { DataTable, type Column } from '@/components/data-table'
 import { CursorPagination } from '@/components/cursor-pagination'
 import { EmptyState } from '@/components/empty-state'
@@ -11,8 +11,7 @@ import { PageHeader } from '@/components/page-header'
 import { PriorityBadge } from '@/components/priority-badge'
 import { RequirePermission } from '@/components/require-permission'
 import { StatusBadge } from '@/components/status-badge'
-import { useTickets } from '@/hooks/use-tickets'
-import type { TicketPriority, TicketStatus } from '@ticketbot/shared'
+import { useTickets, type Ticket } from '@/hooks/use-tickets'
 
 const statusOptions = [
 	{ label: 'Open', value: 'open' },
@@ -45,7 +44,7 @@ export default function TicketsPage() {
 		cursor: currentCursor,
 	})
 
-	const columns: Column<NonNullable<typeof data>['data'][number]>[] = [
+	const columns: Column<Ticket>[] = [
 		{
 			key: 'ticketNumber',
 			header: '#',
@@ -53,8 +52,8 @@ export default function TicketsPage() {
 			className: 'w-20',
 		},
 		{ key: 'subject', header: 'Subject', cell: (row) => <span className="font-medium">{row.subject}</span> },
-		{ key: 'status', header: 'Status', cell: (row) => <StatusBadge status={row.status as TicketStatus} /> },
-		{ key: 'priority', header: 'Priority', cell: (row) => <PriorityBadge priority={row.priority as TicketPriority} /> },
+		{ key: 'status', header: 'Status', cell: (row) => <StatusBadge status={row.status} /> },
+		{ key: 'priority', header: 'Priority', cell: (row) => <PriorityBadge priority={row.priority} /> },
 		{ key: 'categoryName', header: 'Category', cell: (row) => row.categoryName ?? '\u2014' },
 		{
 			key: 'createdAt',
@@ -87,7 +86,7 @@ export default function TicketsPage() {
 					isLoading={isLoading}
 					onRowClick={(row) => router.push(`/${guildId}/tickets/${row.id}`)}
 					emptyState={
-						<EmptyState icon={Ticket} title="No tickets" description="No tickets match your filters." />
+						<EmptyState icon={TicketIcon} title="No tickets" description="No tickets match your filters." />
 					}
 				/>
 			</div>

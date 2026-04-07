@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { apiFetch, apiPut } from '@/lib/api'
+import type { TicketStatus, TicketPriority } from '@ticketbot/shared'
 
-interface Ticket {
+export interface Ticket {
 	id: number
 	ticketNumber: number
 	subject: string
-	status: string
-	priority: string
+	status: TicketStatus
+	priority: TicketPriority
 	channelId: string | null
 	creatorId: string | null
 	assignedToId: string | null
@@ -18,7 +19,7 @@ interface Ticket {
 	closedAt: string | null
 }
 
-interface TicketDetail extends Ticket {
+export interface TicketDetail extends Ticket {
 	messages: Array<{
 		id: number
 		content: string

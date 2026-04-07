@@ -13,10 +13,10 @@ import { RequirePermission } from '@/components/require-permission'
 import { StatusBadge } from '@/components/status-badge'
 import { useTicketDetail, useUpdateTicketStatus, useUpdateTicketPriority } from '@/hooks/use-tickets'
 import { useHasPermission } from '@/providers/permission-provider'
-import type { TicketPriority, TicketStatus } from '@ticketbot/shared'
+import type { TicketStatus, TicketPriority } from '@ticketbot/shared'
 import { cn } from '@/lib/utils'
 
-const STATUSES: TicketStatus[] = ['open', 'pending', 'waiting_user', 'waiting_staff', 'escalated', 'resolved']
+const STATUSES: TicketStatus[] = ['open', 'pending', 'waiting_user', 'waiting_staff', 'escalated', 'resolved', 'closed']
 const PRIORITIES: TicketPriority[] = ['low', 'normal', 'high', 'urgent']
 
 const statusLabels: Record<string, string> = {
@@ -26,6 +26,7 @@ const statusLabels: Record<string, string> = {
 	waiting_staff: 'Waiting Staff',
 	escalated: 'Escalated',
 	resolved: 'Resolved',
+	closed: 'Closed',
 }
 
 const priorityLabels: Record<string, string> = {
@@ -61,8 +62,8 @@ export default function TicketDetailPage() {
 			<PageHeader title={`#${ticket.ticketNumber} \u2014 ${ticket.subject}`} />
 
 			<div className="flex items-center gap-3 mb-6">
-				<StatusBadge status={ticket.status as TicketStatus} />
-				<PriorityBadge priority={ticket.priority as TicketPriority} />
+				<StatusBadge status={ticket.status} />
+				<PriorityBadge priority={ticket.priority} />
 				{ticket.categoryName && <Badge variant="outline">{ticket.categoryName}</Badge>}
 			</div>
 
