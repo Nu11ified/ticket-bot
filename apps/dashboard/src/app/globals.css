@@ -94,13 +94,6 @@
 	--sidebar-ring: oklch(0.585 0.233 264);
 }
 
-body {
-	background: var(--color-surface);
-	color: rgba(255, 255, 255, 0.9);
-	font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-	-webkit-font-smoothing: antialiased;
-}
-
 .glass-panel {
 	background: var(--color-surface-overlay);
 	backdrop-filter: blur(20px);
@@ -136,6 +129,7 @@ body {
 	}
 	body {
 		@apply bg-background text-foreground;
+		-webkit-font-smoothing: antialiased;
 	}
 	html {
 		@apply font-sans;
