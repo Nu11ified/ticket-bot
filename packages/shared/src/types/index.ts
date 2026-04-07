@@ -26,6 +26,23 @@ export type AuditActorType = 'user' | 'system' | 'bot'
 
 export type RateLimitAction = 'ticket.create'
 
+export type ApiKeyPermission =
+	| 'guild.read'
+	| 'tickets.read'
+	| 'tickets.update'
+	| 'transcripts.read'
+	| 'categories.read'
+	| 'audit_logs.read'
+
+export const API_KEY_PERMISSIONS: ApiKeyPermission[] = [
+	'guild.read',
+	'tickets.read',
+	'tickets.update',
+	'transcripts.read',
+	'categories.read',
+	'audit_logs.read',
+]
+
 export type AuditAction =
 	| 'ticket.created'
 	| 'ticket.claimed'
@@ -43,3 +60,11 @@ export type AuditAction =
 	| 'role.permissions_updated'
 	| 'transcript.viewed'
 	| 'transcript.exported'
+	| 'api_key.created'
+	| 'api_key.revoked'
+	| 'api_key.rotated'
+	| 'category.created'
+	| 'category.updated'
+	| 'category.deleted'
+	| 'panel.deleted'
+	| 'panel.deployed'

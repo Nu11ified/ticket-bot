@@ -8,6 +8,13 @@
       "when": 1775481598357,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775526562949,
+      "tag": "0001_tiny_namor",
+      "breakpoints": true
     }
   ]
 }
