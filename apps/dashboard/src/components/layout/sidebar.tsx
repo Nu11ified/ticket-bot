@@ -1,5 +1,9 @@
 'use client'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { cn } from '@/lib/utils'
+import { useGuild } from '@/providers/guild-provider'
+import { useHasPermission } from '@/providers/permission-provider'
 import {
 	FileText,
 	Key,
@@ -12,10 +16,6 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
-import { useGuild } from '@/providers/guild-provider'
-import { useHasPermission } from '@/providers/permission-provider'
 
 interface NavItem {
 	label: string
@@ -47,7 +47,12 @@ const navGroups: NavGroup[] = [
 		label: 'Support',
 		items: [
 			{ label: 'Tickets', href: '/tickets', icon: Ticket, permission: 'tickets.view' },
-			{ label: 'Transcripts', href: '/transcripts', icon: FileText, permission: 'transcripts.view' },
+			{
+				label: 'Transcripts',
+				href: '/transcripts',
+				icon: FileText,
+				permission: 'transcripts.view',
+			},
 		],
 	},
 	{

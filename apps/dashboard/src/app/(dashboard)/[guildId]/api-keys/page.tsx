@@ -1,25 +1,43 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { Copy, Key, Plus, RotateCw, Trash2 } from 'lucide-react'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { DataTable, type Column } from '@/components/data-table'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { type Column, DataTable } from '@/components/data-table'
 import { EmptyState } from '@/components/empty-state'
 import { PageHeader } from '@/components/page-header'
 import { RequirePermission } from '@/components/require-permission'
-import { useApiKeys, useCreateApiKey, useRevokeApiKey, useRotateApiKey, type ApiKey } from '@/hooks/use-api-keys'
-import { apiKeySchema, type ApiKeyFormData } from '@/schemas/api-key'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import {
+	type ApiKey,
+	useApiKeys,
+	useCreateApiKey,
+	useRevokeApiKey,
+	useRotateApiKey,
+} from '@/hooks/use-api-keys'
+import { type ApiKeyFormData, apiKeySchema } from '@/schemas/api-key'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { API_KEY_PERMISSIONS } from '@ticketbot/shared'
+import { Copy, Key, Plus, RotateCw, Trash2 } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 const expiryOptions: Record<string, string> = {
 	never: 'Never',
@@ -64,14 +82,12 @@ export default function ApiKeysPage() {
 		{
 			key: 'lastUsedAt',
 			header: 'Last Used',
-			cell: (row) =>
-				row.lastUsedAt ? new Date(row.lastUsedAt).toLocaleDateString() : 'Never',
+			cell: (row) => (row.lastUsedAt ? new Date(row.lastUsedAt).toLocaleDateString() : 'Never'),
 		},
 		{
 			key: 'expiresAt',
 			header: 'Expires',
-			cell: (row) =>
-				row.expiresAt ? new Date(row.expiresAt).toLocaleDateString() : 'Never',
+			cell: (row) => (row.expiresAt ? new Date(row.expiresAt).toLocaleDateString() : 'Never'),
 		},
 		{
 			key: 'actions',
@@ -109,7 +125,11 @@ export default function ApiKeysPage() {
 					data={keys ?? []}
 					isLoading={isLoading}
 					emptyState={
-						<EmptyState icon={Key} title="No API keys" description="Create an API key for external access." />
+						<EmptyState
+							icon={Key}
+							title="No API keys"
+							description="Create an API key for external access."
+						/>
 					}
 				/>
 			</div>
@@ -159,7 +179,9 @@ export default function ApiKeysPage() {
 								))}
 							</div>
 							{form.formState.errors.permissions && (
-								<p className="text-sm text-destructive">{form.formState.errors.permissions.message}</p>
+								<p className="text-sm text-destructive">
+									{form.formState.errors.permissions.message}
+								</p>
 							)}
 						</div>
 
@@ -168,12 +190,16 @@ export default function ApiKeysPage() {
 							<Select
 								value={expiresInDays ? String(expiresInDays) : 'never'}
 								onValueChange={(v) =>
-									form.setValue('expiresInDays', v === 'never' ? undefined : (Number(v) as 30 | 90 | 365), { shouldValidate: true })
+									form.setValue(
+										'expiresInDays',
+										v === 'never' ? undefined : (Number(v) as 30 | 90 | 365),
+										{ shouldValidate: true },
+									)
 								}
 							>
 								<SelectTrigger>
 									<SelectValue>
-										{(value: string | null) => value ? (expiryOptions[value] ?? value) : 'Never'}
+										{(value: string | null) => (value ? (expiryOptions[value] ?? value) : 'Never')}
 									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
@@ -197,9 +223,7 @@ export default function ApiKeysPage() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>API Key Created</DialogTitle>
-						<DialogDescription>
-							Copy this key now. It won&apos;t be shown again.
-						</DialogDescription>
+						<DialogDescription>Copy this key now. It won&apos;t be shown again.</DialogDescription>
 					</DialogHeader>
 					<div className="flex items-center gap-2 p-3 bg-surface-raised rounded-lg">
 						<code className="text-sm flex-1 break-all">{newKeyValue}</code>

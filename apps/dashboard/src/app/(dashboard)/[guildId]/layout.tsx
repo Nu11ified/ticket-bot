@@ -1,12 +1,12 @@
 'use client'
 
-import { useParams, redirect } from 'next/navigation'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Sidebar } from '@/components/layout/sidebar'
 import { MobileNav } from '@/components/layout/mobile-nav'
+import { Sidebar } from '@/components/layout/sidebar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useGuildDetails, useGuildPermissions } from '@/hooks/use-guilds'
 import { GuildProvider } from '@/providers/guild-provider'
 import { PermissionProvider } from '@/providers/permission-provider'
+import { redirect, useParams } from 'next/navigation'
 
 export default function GuildLayout({ children }: { children: React.ReactNode }) {
 	const params = useParams()

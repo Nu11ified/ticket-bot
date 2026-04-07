@@ -1,14 +1,14 @@
 'use client'
 
-import { RefreshCw, Server } from 'lucide-react'
-import Link from 'next/link'
+import { EmptyState } from '@/components/empty-state'
+import { PageHeader } from '@/components/page-header'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { EmptyState } from '@/components/empty-state'
-import { PageHeader } from '@/components/page-header'
 import { useGuilds, useRefreshGuilds } from '@/hooks/use-guilds'
+import { RefreshCw, Server } from 'lucide-react'
+import Link from 'next/link'
 
 export default function GuildsPage() {
 	const { data: guilds, isLoading } = useGuilds()
@@ -26,7 +26,9 @@ export default function GuildsPage() {
 						onClick={() => refreshGuilds.mutate()}
 						disabled={refreshGuilds.isPending}
 					>
-						<RefreshCw className={`h-4 w-4 mr-2 ${refreshGuilds.isPending ? 'animate-spin' : ''}`} />
+						<RefreshCw
+							className={`h-4 w-4 mr-2 ${refreshGuilds.isPending ? 'animate-spin' : ''}`}
+						/>
 						Refresh
 					</Button>
 				}

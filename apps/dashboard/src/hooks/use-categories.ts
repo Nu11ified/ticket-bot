@@ -1,6 +1,6 @@
+import { apiDelete, apiFetch, apiPost, apiPut } from '@/lib/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { apiDelete, apiFetch, apiPost, apiPut } from '@/lib/api'
 
 export interface Category {
 	id: number
@@ -26,8 +26,12 @@ export function useCategories(guildId: number) {
 export function useCreateCategory(guildId: number) {
 	const queryClient = useQueryClient()
 	return useMutation({
-		mutationFn: (data: { name: string; description?: string; emoji?: string; maxOpenPerUser?: number }) =>
-			apiPost(`/api/guilds/${guildId}/categories`, data),
+		mutationFn: (data: {
+			name: string
+			description?: string
+			emoji?: string
+			maxOpenPerUser?: number
+		}) => apiPost(`/api/guilds/${guildId}/categories`, data),
 		onSuccess() {
 			queryClient.invalidateQueries({ queryKey: ['guilds', guildId, 'categories'] })
 			toast.success('Category created')

@@ -1,14 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { ArrowLeft, Plus, Rocket, Save, X } from 'lucide-react'
+import { PageHeader } from '@/components/page-header'
+import { RequirePermission } from '@/components/require-permission'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import {
 	Dialog,
 	DialogContent,
@@ -17,6 +11,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
 	Select,
 	SelectContent,
@@ -24,17 +20,21 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { PageHeader } from '@/components/page-header'
-import { RequirePermission } from '@/components/require-permission'
-import {
-	usePanelDetail,
-	useUpdatePanel,
-	useDeployPanel,
-	useAddPanelButton,
-	useRemovePanelButton,
-} from '@/hooks/use-panels'
+import { Textarea } from '@/components/ui/textarea'
 import { useCategories } from '@/hooks/use-categories'
-import { panelSchema, type PanelFormData } from '@/schemas/panel'
+import {
+	useAddPanelButton,
+	useDeployPanel,
+	usePanelDetail,
+	useRemovePanelButton,
+	useUpdatePanel,
+} from '@/hooks/use-panels'
+import { type PanelFormData, panelSchema } from '@/schemas/panel'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { ArrowLeft, Plus, Rocket, Save, X } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 const BUTTON_STYLES = [
 	{ value: 'Primary', label: 'Primary (Blue)' },
@@ -58,7 +58,7 @@ function numberToHex(n: number | null | undefined): string {
 function hexToNumber(hex: string): number | null {
 	const cleaned = hex.replace('#', '')
 	if (cleaned.length !== 6) return null
-	const n = parseInt(cleaned, 16)
+	const n = Number.parseInt(cleaned, 16)
 	if (Number.isNaN(n)) return null
 	return n
 }
@@ -165,9 +165,7 @@ export default function PanelEditorPage() {
 	if (!panel) {
 		return (
 			<RequirePermission permission="admin.manage_panels">
-				<div className="text-center py-16 text-muted-foreground">
-					Panel not found
-				</div>
+				<div className="text-center py-16 text-muted-foreground">Panel not found</div>
 			</RequirePermission>
 		)
 	}
@@ -175,11 +173,7 @@ export default function PanelEditorPage() {
 	return (
 		<RequirePermission permission="admin.manage_panels">
 			<div className="mb-4">
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => router.push(`/${guildId}/panels`)}
-				>
+				<Button variant="ghost" size="sm" onClick={() => router.push(`/${guildId}/panels`)}>
 					<ArrowLeft className="h-4 w-4 mr-1" />
 					Back to panels
 				</Button>
@@ -198,19 +192,14 @@ export default function PanelEditorPage() {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 				{/* Left column: Form */}
 				<div className="space-y-6">
-					<form
-						onSubmit={handleSubmit(onSubmit)}
-						className="space-y-6"
-					>
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 						{/* Panel settings */}
 						<div className="glass-panel p-6 space-y-4">
 							<h3 className="text-sm font-medium">Panel Settings</h3>
 							<div className="space-y-2">
 								<Label htmlFor="name">Name</Label>
 								<Input id="name" placeholder="Support Panel" {...register('name')} />
-								{errors.name && (
-									<p className="text-sm text-destructive">{errors.name.message}</p>
-								)}
+								{errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="channelId">Channel ID</Label>
@@ -233,11 +222,7 @@ export default function PanelEditorPage() {
 							<h3 className="text-sm font-medium">Embed</h3>
 							<div className="space-y-2">
 								<Label htmlFor="embedTitle">Title</Label>
-								<Input
-									id="embedTitle"
-									placeholder="Embed title"
-									{...register('embedTitle')}
-								/>
+								<Input id="embedTitle" placeholder="Embed title" {...register('embedTitle')} />
 								{errors.embedTitle && (
 									<p className="text-sm text-destructive">{errors.embedTitle.message}</p>
 								)}
@@ -355,12 +340,10 @@ export default function PanelEditorPage() {
 							className="rounded border-l-4 bg-[#2F3136] p-4"
 							style={{ borderLeftColor: colorHex }}
 						>
-							{(watchedTitle) && (
-								<div className="font-semibold text-white text-sm mb-1">
-									{watchedTitle}
-								</div>
+							{watchedTitle && (
+								<div className="font-semibold text-white text-sm mb-1">{watchedTitle}</div>
 							)}
-							{(watchedDescription) && (
+							{watchedDescription && (
 								<div className="text-[#DCDDDE] text-sm whitespace-pre-wrap">
 									{watchedDescription}
 								</div>
@@ -370,7 +353,7 @@ export default function PanelEditorPage() {
 									Empty embed -- fill in the title and description above
 								</div>
 							)}
-							{(watchedFooter) && (
+							{watchedFooter && (
 								<div className="mt-3 pt-2 border-t border-[#3F4147] text-xs text-[#72767D]">
 									{watchedFooter}
 								</div>
@@ -402,9 +385,7 @@ export default function PanelEditorPage() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Add Button</DialogTitle>
-						<DialogDescription>
-							Link a category to a button on this panel.
-						</DialogDescription>
+						<DialogDescription>Link a category to a button on this panel.</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-4">
 						<div className="space-y-2">
@@ -419,7 +400,8 @@ export default function PanelEditorPage() {
 								<SelectContent>
 									{categories.map((cat) => (
 										<SelectItem key={cat.id} value={String(cat.id)}>
-											{cat.emoji && `${cat.emoji} `}{cat.name}
+											{cat.emoji && `${cat.emoji} `}
+											{cat.name}
 										</SelectItem>
 									))}
 								</SelectContent>
@@ -445,7 +427,10 @@ export default function PanelEditorPage() {
 						</div>
 						<div className="space-y-2">
 							<Label>Style</Label>
-							<Select value={newButtonStyle} onValueChange={(v) => setNewButtonStyle(v ?? 'Primary')}>
+							<Select
+								value={newButtonStyle}
+								onValueChange={(v) => setNewButtonStyle(v ?? 'Primary')}
+							>
 								<SelectTrigger className="w-full">
 									<SelectValue />
 								</SelectTrigger>

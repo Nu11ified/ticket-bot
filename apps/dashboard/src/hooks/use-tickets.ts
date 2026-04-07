@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 import { apiFetch, apiPut } from '@/lib/api'
-import type { TicketStatus, TicketPriority } from '@ticketbot/shared'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { TicketPriority, TicketStatus } from '@ticketbot/shared'
+import { toast } from 'sonner'
 
 export interface Ticket {
 	id: number
@@ -26,7 +26,12 @@ export interface TicketDetail extends Ticket {
 		isStaff: boolean
 		isInternalNote: boolean
 		createdAt: string
-		user: { id: string; username: string; displayName: string | null; avatarUrl: string | null } | null
+		user: {
+			id: string
+			username: string
+			displayName: string | null
+			avatarUrl: string | null
+		} | null
 	}>
 }
 
@@ -65,7 +70,9 @@ export function useTicketDetail(guildId: number, ticketId: number) {
 	return useQuery({
 		queryKey: ['guilds', guildId, 'tickets', ticketId],
 		queryFn: () =>
-			apiFetch<{ data: TicketDetail }>(`/api/guilds/${guildId}/tickets/${ticketId}`).then((r) => r.data),
+			apiFetch<{ data: TicketDetail }>(`/api/guilds/${guildId}/tickets/${ticketId}`).then(
+				(r) => r.data,
+			),
 		enabled: ticketId > 0,
 	})
 }
@@ -77,7 +84,12 @@ export function useUpdateTicketStatus(guildId: number) {
 			apiPut(`/api/guilds/${guildId}/tickets/${ticketId}/status`, { status }),
 		async onMutate({ ticketId, status }) {
 			await queryClient.cancelQueries({ queryKey: ['guilds', guildId, 'tickets', ticketId] })
-			const previous = queryClient.getQueryData<TicketDetail>(['guilds', guildId, 'tickets', ticketId])
+			const previous = queryClient.getQueryData<TicketDetail>([
+				'guilds',
+				guildId,
+				'tickets',
+				ticketId,
+			])
 			if (previous) {
 				queryClient.setQueryData(['guilds', guildId, 'tickets', ticketId], { ...previous, status })
 			}
@@ -104,9 +116,17 @@ export function useUpdateTicketPriority(guildId: number) {
 			apiPut(`/api/guilds/${guildId}/tickets/${ticketId}/priority`, { priority }),
 		async onMutate({ ticketId, priority }) {
 			await queryClient.cancelQueries({ queryKey: ['guilds', guildId, 'tickets', ticketId] })
-			const previous = queryClient.getQueryData<TicketDetail>(['guilds', guildId, 'tickets', ticketId])
+			const previous = queryClient.getQueryData<TicketDetail>([
+				'guilds',
+				guildId,
+				'tickets',
+				ticketId,
+			])
 			if (previous) {
-				queryClient.setQueryData(['guilds', guildId, 'tickets', ticketId], { ...previous, priority })
+				queryClient.setQueryData(['guilds', guildId, 'tickets', ticketId], {
+					...previous,
+					priority,
+				})
 			}
 			return { previous }
 		},

@@ -1,15 +1,15 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useState } from 'react'
-import { RefreshCw, Shield } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/empty-state'
 import { PageHeader } from '@/components/page-header'
 import { RequirePermission } from '@/components/require-permission'
-import { useRoles, useUpdateRolePermissions, useRefreshRoles } from '@/hooks/use-roles'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useRefreshRoles, useRoles, useUpdateRolePermissions } from '@/hooks/use-roles'
+import { RefreshCw, Shield } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 
 const ALL_PERMISSIONS = [
 	{ key: 'tickets.view', label: 'View tickets', category: 'tickets' },
@@ -56,7 +56,11 @@ export default function RolesPage() {
 			/>
 
 			{!roles?.length ? (
-				<EmptyState icon={Shield} title="No roles" description="Refresh roles from Discord to get started." />
+				<EmptyState
+					icon={Shield}
+					title="No roles"
+					description="Refresh roles from Discord to get started."
+				/>
 			) : (
 				<div className="space-y-2">
 					{roles.map((role) => {
@@ -73,7 +77,11 @@ export default function RolesPage() {
 									<div className="flex items-center gap-3">
 										<div
 											className="w-3 h-3 rounded-full"
-											style={{ backgroundColor: role.color ? `#${role.color.toString(16).padStart(6, '0')}` : '#99aab5' }}
+											style={{
+												backgroundColor: role.color
+													? `#${role.color.toString(16).padStart(6, '0')}`
+													: '#99aab5',
+											}}
 										/>
 										<span className="font-medium">{role.name}</span>
 									</div>
@@ -90,7 +98,10 @@ export default function RolesPage() {
 												</p>
 												<div className="space-y-2">
 													{ALL_PERMISSIONS.filter((p) => p.category === cat).map((perm) => (
-														<label key={perm.key} className="flex items-center gap-2 cursor-pointer">
+														<label
+															key={perm.key}
+															className="flex items-center gap-2 cursor-pointer"
+														>
 															<Checkbox
 																checked={rolePermKeys.includes(perm.key)}
 																onCheckedChange={(checked) => {

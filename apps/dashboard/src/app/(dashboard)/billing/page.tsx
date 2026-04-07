@@ -1,18 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import { CreditCard, ExternalLink, Minus, Plus, Server } from 'lucide-react'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { EmptyState } from '@/components/empty-state'
+import { PageHeader } from '@/components/page-header'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ConfirmDialog } from '@/components/confirm-dialog'
-import { EmptyState } from '@/components/empty-state'
-import { PageHeader } from '@/components/page-header'
-import { useBilling, useAssignPremium, useUnassignPremium } from '@/hooks/use-billing'
+import { useAssignPremium, useBilling, useUnassignPremium } from '@/hooks/use-billing'
 import { useGuilds } from '@/hooks/use-guilds'
 import { PREMIUM_PRICE } from '@ticketbot/shared'
+import { CreditCard, ExternalLink, Minus, Plus, Server } from 'lucide-react'
+import { useState } from 'react'
 
 export default function BillingPage() {
 	const { data: billing, isLoading } = useBilling()
@@ -30,7 +30,8 @@ export default function BillingPage() {
 	const isCanceled = billing?.subscriptionStatus === 'canceled'
 
 	const assignedGuildIds = new Set(billing?.assignments.map((a) => a.guildId) ?? [])
-	const eligibleGuilds = guilds?.filter((g) => g.planTier === 'free' && !assignedGuildIds.has(g.id)) ?? []
+	const eligibleGuilds =
+		guilds?.filter((g) => g.planTier === 'free' && !assignedGuildIds.has(g.id)) ?? []
 
 	return (
 		<div className="max-w-2xl mx-auto">
@@ -52,7 +53,7 @@ export default function BillingPage() {
 					<div>
 						<h3 className="font-medium">Subscription</h3>
 						<Badge variant={isSubscribed ? 'default' : 'outline'} className="mt-1">
-							{isSubscribed ? 'Active' : billing?.subscriptionStatus ?? 'None'}
+							{isSubscribed ? 'Active' : (billing?.subscriptionStatus ?? 'None')}
 						</Badge>
 					</div>
 					{isSubscribed || isPastDue || isCanceled ? (
@@ -111,7 +112,10 @@ export default function BillingPage() {
 					) : (
 						<div className="space-y-3">
 							{billing.assignments.map((assignment) => (
-								<div key={assignment.id} className="flex items-center justify-between p-3 rounded-lg bg-surface-raised">
+								<div
+									key={assignment.id}
+									className="flex items-center justify-between p-3 rounded-lg bg-surface-raised"
+								>
 									<div className="flex items-center gap-3">
 										<Avatar className="h-8 w-8">
 											<AvatarImage src={assignment.guildIconUrl ?? undefined} />
@@ -141,7 +145,8 @@ export default function BillingPage() {
 					</DialogHeader>
 					{eligibleGuilds.length === 0 ? (
 						<p className="text-sm text-muted-foreground py-4">
-							No eligible servers. All your servers already have premium or you need admin permissions.
+							No eligible servers. All your servers already have premium or you need admin
+							permissions.
 						</p>
 					) : (
 						<div className="space-y-2">

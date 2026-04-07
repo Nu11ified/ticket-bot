@@ -1,6 +1,6 @@
+import { apiDelete, apiFetch, apiPost, apiPut } from '@/lib/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { apiDelete, apiFetch, apiPost, apiPut } from '@/lib/api'
 
 interface Panel {
 	id: number
@@ -40,7 +40,9 @@ export function usePanelDetail(guildId: number, panelId: number) {
 	return useQuery({
 		queryKey: ['guilds', guildId, 'panels', panelId],
 		queryFn: () =>
-			apiFetch<{ data: PanelWithButtons }>(`/api/guilds/${guildId}/panels/${panelId}`).then((r) => r.data),
+			apiFetch<{ data: PanelWithButtons }>(`/api/guilds/${guildId}/panels/${panelId}`).then(
+				(r) => r.data,
+			),
 		enabled: panelId > 0,
 	})
 }
@@ -48,7 +50,8 @@ export function usePanelDetail(guildId: number, panelId: number) {
 export function useCreatePanel(guildId: number) {
 	const queryClient = useQueryClient()
 	return useMutation({
-		mutationFn: (data: { name: string }) => apiPost<{ data: Panel }>(`/api/guilds/${guildId}/panels`, data),
+		mutationFn: (data: { name: string }) =>
+			apiPost<{ data: Panel }>(`/api/guilds/${guildId}/panels`, data),
 		onSuccess() {
 			queryClient.invalidateQueries({ queryKey: ['guilds', guildId, 'panels'] })
 			toast.success('Panel created')
@@ -83,8 +86,7 @@ export function useDeletePanel(guildId: number) {
 export function useDeployPanel(guildId: number) {
 	const queryClient = useQueryClient()
 	return useMutation({
-		mutationFn: (panelId: number) =>
-			apiPost(`/api/guilds/${guildId}/panels/${panelId}/deploy`, {}),
+		mutationFn: (panelId: number) => apiPost(`/api/guilds/${guildId}/panels/${panelId}/deploy`, {}),
 		onSuccess() {
 			queryClient.invalidateQueries({ queryKey: ['guilds', guildId, 'panels'] })
 			toast.success('Panel deployed to Discord')

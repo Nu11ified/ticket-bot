@@ -1,4 +1,4 @@
-export { PLAN_DEFAULTS } from './plan-defaults.js'
+export { PLAN_DEFAULTS } from './plan-defaults'
 
 export const TICKET_RATE_LIMIT = {
 	maxPerMinute: 1,

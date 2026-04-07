@@ -1,16 +1,16 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useState } from 'react'
-import { ScrollText } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { DataTable, type Column } from '@/components/data-table'
 import { CursorPagination } from '@/components/cursor-pagination'
+import { type Column, DataTable } from '@/components/data-table'
 import { EmptyState } from '@/components/empty-state'
 import { FilterBar } from '@/components/filter-bar'
 import { PageHeader } from '@/components/page-header'
 import { RequirePermission } from '@/components/require-permission'
-import { useAuditLogs, type AuditLog } from '@/hooks/use-audit-logs'
+import { Badge } from '@/components/ui/badge'
+import { type AuditLog, useAuditLogs } from '@/hooks/use-audit-logs'
+import { ScrollText } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 
 const actionOptions = [
 	{ label: 'Ticket Created', value: 'ticket.created' },
@@ -93,7 +93,11 @@ export default function AuditLogsPage() {
 					data={data?.data ?? []}
 					isLoading={isLoading}
 					emptyState={
-						<EmptyState icon={ScrollText} title="No audit logs" description="Actions will appear here as they happen." />
+						<EmptyState
+							icon={ScrollText}
+							title="No audit logs"
+							description="Actions will appear here as they happen."
+						/>
 					}
 				/>
 			</div>

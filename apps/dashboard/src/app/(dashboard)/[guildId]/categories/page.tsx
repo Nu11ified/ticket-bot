@@ -1,36 +1,36 @@
 'use client'
 
-import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { FolderOpen, Plus, Trash2 } from 'lucide-react'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { type Column, DataTable } from '@/components/data-table'
+import { EmptyState } from '@/components/empty-state'
+import { PageHeader } from '@/components/page-header'
+import { RequirePermission } from '@/components/require-permission'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import {
 	Sheet,
 	SheetContent,
-	SheetHeader,
-	SheetTitle,
 	SheetDescription,
 	SheetFooter,
+	SheetHeader,
+	SheetTitle,
 } from '@/components/ui/sheet'
-import { DataTable, type Column } from '@/components/data-table'
-import { PageHeader } from '@/components/page-header'
-import { EmptyState } from '@/components/empty-state'
-import { RequirePermission } from '@/components/require-permission'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
 import {
+	type Category,
 	useCategories,
 	useCreateCategory,
-	useUpdateCategory,
 	useDeleteCategory,
-	type Category,
+	useUpdateCategory,
 } from '@/hooks/use-categories'
-import { categorySchema, type CategoryFormData } from '@/schemas/category'
+import { type CategoryFormData, categorySchema } from '@/schemas/category'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { FolderOpen, Plus, Trash2 } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 export default function CategoriesPage() {
 	const params = useParams()
@@ -165,28 +165,19 @@ export default function CategoriesPage() {
 				<SheetContent>
 					<SheetHeader>
 						<SheetTitle>New Category</SheetTitle>
-						<SheetDescription>
-							Create a new ticket category for your server.
-						</SheetDescription>
+						<SheetDescription>Create a new ticket category for your server.</SheetDescription>
 					</SheetHeader>
-					<form
-						onSubmit={handleSubmit(onSubmit)}
-						className="flex flex-col gap-4 px-4 flex-1"
-					>
+					<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 px-4 flex-1">
 						<div className="space-y-2">
 							<Label htmlFor="name">Name</Label>
 							<Input id="name" placeholder="General Support" {...register('name')} />
-							{errors.name && (
-								<p className="text-sm text-destructive">{errors.name.message}</p>
-							)}
+							{errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
 						</div>
 
 						<div className="space-y-2">
 							<Label htmlFor="emoji">Emoji</Label>
 							<Input id="emoji" placeholder="🎫" {...register('emoji')} />
-							{errors.emoji && (
-								<p className="text-sm text-destructive">{errors.emoji.message}</p>
-							)}
+							{errors.emoji && <p className="text-sm text-destructive">{errors.emoji.message}</p>}
 						</div>
 
 						<div className="space-y-2">

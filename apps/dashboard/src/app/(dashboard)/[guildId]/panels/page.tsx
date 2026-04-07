@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { LayoutGrid, Plus, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { type Column, DataTable } from '@/components/data-table'
+import { EmptyState } from '@/components/empty-state'
+import { PageHeader } from '@/components/page-header'
+import { RequirePermission } from '@/components/require-permission'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -15,12 +15,12 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog'
-import { DataTable, type Column } from '@/components/data-table'
-import { PageHeader } from '@/components/page-header'
-import { EmptyState } from '@/components/empty-state'
-import { RequirePermission } from '@/components/require-permission'
-import { ConfirmDialog } from '@/components/confirm-dialog'
-import { usePanels, useCreatePanel, useDeletePanel, type Panel } from '@/hooks/use-panels'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { type Panel, useCreatePanel, useDeletePanel, usePanels } from '@/hooks/use-panels'
+import { LayoutGrid, Plus, Trash2 } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function PanelsPage() {
 	const params = useParams()
@@ -66,9 +66,7 @@ export default function PanelsPage() {
 		{
 			key: 'channelId',
 			header: 'Channel',
-			cell: (row) => (
-				<span className="text-muted-foreground">{row.channelId ?? '--'}</span>
-			),
+			cell: (row) => <span className="text-muted-foreground">{row.channelId ?? '--'}</span>,
 		},
 		{
 			key: 'isPublished',
@@ -135,9 +133,7 @@ export default function PanelsPage() {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>New Panel</DialogTitle>
-						<DialogDescription>
-							Create a new panel for your server.
-						</DialogDescription>
+						<DialogDescription>Create a new panel for your server.</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-2">
 						<Label htmlFor="panel-name">Name</Label>
@@ -155,10 +151,7 @@ export default function PanelsPage() {
 						/>
 					</div>
 					<DialogFooter>
-						<Button
-							onClick={handleCreate}
-							disabled={createPanel.isPending || !newName.trim()}
-						>
+						<Button onClick={handleCreate} disabled={createPanel.isPending || !newName.trim()}>
 							{createPanel.isPending ? 'Creating...' : 'Create Panel'}
 						</Button>
 					</DialogFooter>

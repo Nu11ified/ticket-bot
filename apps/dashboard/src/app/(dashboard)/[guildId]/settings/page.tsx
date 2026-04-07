@@ -1,19 +1,19 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { Save } from 'lucide-react'
+import { PageHeader } from '@/components/page-header'
+import { RequirePermission } from '@/components/require-permission'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { PageHeader } from '@/components/page-header'
-import { RequirePermission } from '@/components/require-permission'
-import { useGuild } from '@/providers/guild-provider'
 import { apiPut } from '@/lib/api'
-import { settingsSchema, type SettingsFormData } from '@/schemas/settings'
+import { useGuild } from '@/providers/guild-provider'
+import { type SettingsFormData, settingsSchema } from '@/schemas/settings'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Save } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 export default function SettingsPage() {
 	const params = useParams()
@@ -39,8 +39,7 @@ export default function SettingsPage() {
 	})
 
 	const updateSettings = useMutation({
-		mutationFn: (data: SettingsFormData) =>
-			apiPut(`/api/guilds/${guildId}/settings`, data),
+		mutationFn: (data: SettingsFormData) => apiPut(`/api/guilds/${guildId}/settings`, data),
 		onSuccess() {
 			queryClient.invalidateQueries({ queryKey: ['guilds', guildId] })
 			toast.success('Settings saved')
@@ -60,9 +59,7 @@ export default function SettingsPage() {
 						<div className="space-y-2">
 							<Label htmlFor="locale">Locale</Label>
 							<Input id="locale" placeholder="en" {...register('locale')} />
-							{errors.locale && (
-								<p className="text-sm text-destructive">{errors.locale.message}</p>
-							)}
+							{errors.locale && <p className="text-sm text-destructive">{errors.locale.message}</p>}
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="timezone">Timezone</Label>
@@ -78,14 +75,8 @@ export default function SettingsPage() {
 					<h3 className="text-sm font-medium">Channels</h3>
 					<div className="space-y-2">
 						<Label htmlFor="logChannelId">Log Channel ID</Label>
-						<Input
-							id="logChannelId"
-							placeholder="Channel ID"
-							{...register('logChannelId')}
-						/>
-						<p className="text-sm text-muted-foreground">
-							Channel for ticket log messages
-						</p>
+						<Input id="logChannelId" placeholder="Channel ID" {...register('logChannelId')} />
+						<p className="text-sm text-muted-foreground">Channel for ticket log messages</p>
 						{errors.logChannelId && (
 							<p className="text-sm text-destructive">{errors.logChannelId.message}</p>
 						)}
@@ -98,9 +89,7 @@ export default function SettingsPage() {
 							{...register('transcriptChannelId')}
 						/>
 						{errors.transcriptChannelId && (
-							<p className="text-sm text-destructive">
-								{errors.transcriptChannelId.message}
-							</p>
+							<p className="text-sm text-destructive">{errors.transcriptChannelId.message}</p>
 						)}
 					</div>
 				</div>
@@ -116,9 +105,7 @@ export default function SettingsPage() {
 								{...register('ticketCooldownSeconds', { valueAsNumber: true })}
 							/>
 							{errors.ticketCooldownSeconds && (
-								<p className="text-sm text-destructive">
-									{errors.ticketCooldownSeconds.message}
-								</p>
+								<p className="text-sm text-destructive">{errors.ticketCooldownSeconds.message}</p>
 							)}
 						</div>
 						<div className="space-y-2">
@@ -132,9 +119,7 @@ export default function SettingsPage() {
 								defaultValue={guild.settings?.autoCloseHours ?? ''}
 							/>
 							{errors.autoCloseHours && (
-								<p className="text-sm text-destructive">
-									{errors.autoCloseHours.message}
-								</p>
+								<p className="text-sm text-destructive">{errors.autoCloseHours.message}</p>
 							)}
 						</div>
 					</div>
@@ -146,9 +131,7 @@ export default function SettingsPage() {
 							{...register('transcriptRetentionDays', { valueAsNumber: true })}
 						/>
 						{errors.transcriptRetentionDays && (
-							<p className="text-sm text-destructive">
-								{errors.transcriptRetentionDays.message}
-							</p>
+							<p className="text-sm text-destructive">{errors.transcriptRetentionDays.message}</p>
 						)}
 					</div>
 				</div>

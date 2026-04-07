@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '@/lib/api'
+import { useQuery } from '@tanstack/react-query'
 
 export interface Transcript {
 	id: number
@@ -31,10 +31,17 @@ export function useTranscripts(guildId: number, cursor?: string) {
 	})
 }
 
-export function useExportTranscript(guildId: number, transcriptId: number, format: 'json' | 'html') {
+export function useExportTranscript(
+	guildId: number,
+	transcriptId: number,
+	format: 'json' | 'html',
+) {
 	return {
 		download() {
-			window.open(`/api/guilds/${guildId}/transcripts/${transcriptId}/export?format=${format}`, '_blank')
+			window.open(
+				`/api/guilds/${guildId}/transcripts/${transcriptId}/export?format=${format}`,
+				'_blank',
+			)
 		},
 	}
 }

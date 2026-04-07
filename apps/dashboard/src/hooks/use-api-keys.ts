@@ -1,6 +1,6 @@
+import { apiDelete, apiFetch, apiPost } from '@/lib/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { apiDelete, apiFetch, apiPost } from '@/lib/api'
 
 export interface ApiKey {
 	id: number
@@ -24,7 +24,8 @@ interface CreateApiKeyResult {
 export function useApiKeys(guildId: number) {
 	return useQuery({
 		queryKey: ['guilds', guildId, 'api-keys'],
-		queryFn: () => apiFetch<{ data: ApiKey[] }>(`/api/guilds/${guildId}/api-keys`).then((r) => r.data),
+		queryFn: () =>
+			apiFetch<{ data: ApiKey[] }>(`/api/guilds/${guildId}/api-keys`).then((r) => r.data),
 	})
 }
 

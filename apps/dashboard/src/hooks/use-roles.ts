@@ -1,6 +1,6 @@
+import { apiFetch, apiPost, apiPut } from '@/lib/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { apiFetch, apiPost, apiPut } from '@/lib/api'
 
 export interface RolePermission {
 	id: number

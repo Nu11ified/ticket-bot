@@ -1,22 +1,40 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/components/page-header'
 import { PriorityBadge } from '@/components/priority-badge'
 import { RequirePermission } from '@/components/require-permission'
 import { StatusBadge } from '@/components/status-badge'
-import { useTicketDetail, useUpdateTicketStatus, useUpdateTicketPriority } from '@/hooks/use-tickets'
-import { useHasPermission } from '@/providers/permission-provider'
-import type { TicketStatus, TicketPriority } from '@ticketbot/shared'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+	useTicketDetail,
+	useUpdateTicketPriority,
+	useUpdateTicketStatus,
+} from '@/hooks/use-tickets'
 import { cn } from '@/lib/utils'
+import { useHasPermission } from '@/providers/permission-provider'
+import type { TicketPriority, TicketStatus } from '@ticketbot/shared'
+import { ArrowLeft } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
 
-const STATUSES: TicketStatus[] = ['open', 'pending', 'waiting_user', 'waiting_staff', 'escalated', 'resolved', 'closed']
+const STATUSES: TicketStatus[] = [
+	'open',
+	'pending',
+	'waiting_user',
+	'waiting_staff',
+	'escalated',
+	'resolved',
+	'closed',
+]
 const PRIORITIES: TicketPriority[] = ['low', 'normal', 'high', 'urgent']
 
 const statusLabels: Record<string, string> = {
@@ -71,13 +89,13 @@ export default function TicketDetailPage() {
 				<div className="flex gap-3 mb-6">
 					<Select
 						value={ticket.status}
-						onValueChange={(status) => { if (status) updateStatus.mutate({ ticketId, status }) }}
+						onValueChange={(status) => {
+							if (status) updateStatus.mutate({ ticketId, status })
+						}}
 					>
 						<SelectTrigger className="w-[180px]">
 							<SelectValue>
-								{(value: string | null) =>
-									value ? (statusLabels[value] ?? value) : 'Status'
-								}
+								{(value: string | null) => (value ? (statusLabels[value] ?? value) : 'Status')}
 							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
@@ -91,13 +109,13 @@ export default function TicketDetailPage() {
 
 					<Select
 						value={ticket.priority}
-						onValueChange={(priority) => { if (priority) updatePriority.mutate({ ticketId, priority }) }}
+						onValueChange={(priority) => {
+							if (priority) updatePriority.mutate({ ticketId, priority })
+						}}
 					>
 						<SelectTrigger className="w-[140px]">
 							<SelectValue>
-								{(value: string | null) =>
-									value ? (priorityLabels[value] ?? value) : 'Priority'
-								}
+								{(value: string | null) => (value ? (priorityLabels[value] ?? value) : 'Priority')}
 							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
@@ -123,9 +141,7 @@ export default function TicketDetailPage() {
 						<div className="flex items-center gap-3 mb-2">
 							<Avatar className="h-8 w-8">
 								<AvatarImage src={msg.user?.avatarUrl ?? undefined} />
-								<AvatarFallback>
-									{msg.user?.username?.[0]?.toUpperCase() ?? '?'}
-								</AvatarFallback>
+								<AvatarFallback>{msg.user?.username?.[0]?.toUpperCase() ?? '?'}</AvatarFallback>
 							</Avatar>
 							<div className="flex items-center gap-2">
 								<span className="text-sm font-medium">

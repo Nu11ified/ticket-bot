@@ -1,8 +1,10 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { useState } from 'react'
-import { Download, FileText } from 'lucide-react'
+import { CursorPagination } from '@/components/cursor-pagination'
+import { type Column, DataTable } from '@/components/data-table'
+import { EmptyState } from '@/components/empty-state'
+import { PageHeader } from '@/components/page-header'
+import { RequirePermission } from '@/components/require-permission'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -10,13 +12,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { DataTable, type Column } from '@/components/data-table'
-import { CursorPagination } from '@/components/cursor-pagination'
-import { EmptyState } from '@/components/empty-state'
-import { PageHeader } from '@/components/page-header'
-import { RequirePermission } from '@/components/require-permission'
-import { useTranscripts, type Transcript } from '@/hooks/use-transcripts'
+import { type Transcript, useTranscripts } from '@/hooks/use-transcripts'
 import { useHasPermission } from '@/providers/permission-provider'
+import { Download, FileText } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 
 export default function TranscriptsPage() {
 	const params = useParams()
