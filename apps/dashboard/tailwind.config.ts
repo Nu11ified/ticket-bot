@@ -16,7 +16,7 @@ const config: Config = {
 					raised: 'rgba(25, 25, 35, 1)',
 					overlay: 'rgba(30, 30, 45, 0.8)',
 				},
-				accent: {
+				brand: {
 					DEFAULT: 'rgba(99, 102, 241, 1)',
 					glow: 'rgba(99, 102, 241, 0.3)',
 				},
