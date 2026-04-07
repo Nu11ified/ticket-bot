@@ -46,10 +46,18 @@ const app = new Elysia()
 			allowedHeaders: ['Content-Type', 'Authorization'],
 		}),
 	)
-	.onError(({ error, set }) => {
+	.onError(({ error, code, set }) => {
 		if (error instanceof ApiError) {
 			set.status = error.status
-			return { error: error.code, message: error.message }
+			return { error: error.code, message: error.message, ...error.data }
+		}
+		if (code === 'VALIDATION') {
+			set.status = 400
+			return { error: 'VALIDATION_ERROR', message: error.message }
+		}
+		if (code === 'NOT_FOUND') {
+			set.status = 404
+			return { error: 'NOT_FOUND', message: 'Route not found' }
 		}
 		console.error(error)
 		set.status = 500

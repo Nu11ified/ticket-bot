@@ -1,3 +1,4 @@
+import { syncUserGuilds } from '@ticketbot/auth'
 import type { Database } from '@ticketbot/db'
 import { auditLogs } from '@ticketbot/db'
 import { Elysia, t } from 'elysia'
@@ -28,6 +29,16 @@ export function guildRoutes(db: Database) {
 				auth: true,
 				params: t.Object({ guildId: t.Numeric() }),
 			},
+		)
+		.post(
+			'/refresh',
+			// biome-ignore lint/suspicious/noExplicitAny: user injected by auth macro
+			async ({ user }: any) => {
+				await syncUserGuilds(db, user.id)
+				return { success: true }
+			},
+			// @ts-expect-error auth macro injected by parent plugin
+			{ auth: true },
 		)
 		.put(
 			'/:guildId/settings',

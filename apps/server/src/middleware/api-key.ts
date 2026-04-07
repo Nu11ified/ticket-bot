@@ -64,7 +64,9 @@ export function apiKeyPlugin(db: Database) {
 			set.headers['x-ratelimit-remaining'] = '0'
 			set.headers['x-ratelimit-reset'] = String(result.resetAt)
 			set.headers['retry-after'] = String(result.retryAfter)
-			throw new ApiError(429, 'RATE_LIMIT_EXCEEDED', 'Rate limit exceeded')
+			throw new ApiError(429, 'RATE_LIMIT_EXCEEDED', 'Rate limit exceeded', {
+				retryAfter: result.retryAfter,
+			})
 		}
 
 		// Set rate limit headers
