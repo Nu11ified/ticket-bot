@@ -1,0 +1,25 @@
+{
+	"name": "@ticketbot/root",
+	"private": true,
+	"scripts": {
+		"dev": "docker compose up",
+		"dev:bot": "bun --watch apps/bot/src/index.ts",
+		"dev:server": "bun --watch apps/server/src/index.ts",
+		"dev:dashboard": "pnpm --filter @ticketbot/dashboard dev",
+		"db:generate": "pnpm --filter @ticketbot/db drizzle-kit generate",
+		"db:migrate": "pnpm --filter @ticketbot/db drizzle-kit migrate",
+		"db:studio": "pnpm --filter @ticketbot/db drizzle-kit studio",
+		"build": "bazel build //...",
+		"test": "bazel test //...",
+		"lint": "bunx biome check .",
+		"lint:fix": "bunx biome check --write .",
+		"format": "bunx biome format --write ."
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"packageManager": "pnpm@9.15.4",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4"
+	}
+}

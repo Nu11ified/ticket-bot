@@ -1,0 +1,16 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+ts_project(
+    name = "db",
+    srcs = glob(["src/**/*.ts"]),
+    composite = True,
+    declaration = True,
+    declaration_map = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:node_modules",
+        "//packages/shared",
+    ],
+)

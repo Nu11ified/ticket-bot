@@ -1,0 +1,39 @@
+# ---- base ----
+FROM oven/bun:1-alpine AS base
+WORKDIR /app
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# ---- deps ----
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY packages/shared/package.json packages/shared/
+COPY apps/dashboard/package.json apps/dashboard/
+RUN bun install --frozen-lockfile
+
+# ---- dev ----
+FROM deps AS dev
+COPY packages/ packages/
+COPY apps/dashboard/ apps/dashboard/
+EXPOSE 3000
+CMD ["bunx", "next", "dev", "--port", "3000"]
+
+# ---- build ----
+FROM deps AS build
+COPY packages/ packages/
+COPY apps/dashboard/ apps/dashboard/
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN bunx next build
+
+# ---- prod ----
+FROM oven/bun:1-alpine AS prod
+WORKDIR /app
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY --from=build /app/apps/dashboard/.next/standalone ./
+COPY --from=build /app/apps/dashboard/.next/static ./.next/static
+COPY --from=build /app/apps/dashboard/public ./public
+EXPOSE 3000
+CMD ["bun", "server.js"]

@@ -1,0 +1,36 @@
+# ---- base ----
+FROM oven/bun:1-alpine AS base
+WORKDIR /app
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# ---- deps ----
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY packages/db/package.json packages/db/
+COPY packages/shared/package.json packages/shared/
+COPY packages/auth/package.json packages/auth/
+COPY apps/server/package.json apps/server/
+RUN bun install --frozen-lockfile
+
+# ---- dev ----
+FROM deps AS dev
+COPY packages/ packages/
+COPY apps/server/ apps/server/
+EXPOSE 3001
+CMD ["bun", "--watch", "apps/server/src/index.ts"]
+
+# ---- build ----
+FROM deps AS build
+COPY packages/ packages/
+COPY apps/server/ apps/server/
+RUN bun build apps/server/src/index.ts --target=bun --outdir=dist --minify
+
+# ---- prod ----
+FROM oven/bun:1-alpine AS prod
+WORKDIR /app
+RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
+COPY --from=build /app/dist/ ./
+EXPOSE 3001
+CMD ["bun", "index.js"]

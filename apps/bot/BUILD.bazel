@@ -1,0 +1,12 @@
+load("//tools:bun_build.bzl", "bun_bundle")
+
+bun_bundle(
+    name = "bot",
+    entry_point = "src/index.ts",
+    srcs = glob(["src/**/*.ts"]),
+    deps = [
+        "//:node_modules",
+        "//packages/shared",
+        "//packages/db",
+    ],
+)

@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ticketbot}
+      POSTGRES_USER: ${POSTGRES_USER:-ticketbot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ticketbot}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+      target: prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    restart: always
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      target: prod
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+      target: prod
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    env_file: .env
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pgdata:
